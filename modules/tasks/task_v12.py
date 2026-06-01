@@ -179,7 +179,7 @@ def render(cfg: dict):
     inp = get_inputs()
 
     title_col, btn_col = st.columns([5, 1.3])
-    title_col.subheader("В.12 — Расход жидкости и давление при нагнетании кислоты в пласт")
+    title_col.subheader("Расход жидкости и давление при нагнетании кислоты в пласт")
     if btn_col.button("Пример В.3.1", key="ex_v12", type="secondary", use_container_width=True):
         _load_example(); st.rerun()
 
