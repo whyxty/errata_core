@@ -161,7 +161,19 @@ code {{
 /* ─── sidebar ─── */
 [data-testid="stSidebar"] {{
     background: var(--bg-subtle) !important;
-    border-right: 1px solid var(--border);
+    border-right: 1px solid var(--border-strong);
+}}
+/* ручка изменения ширины сайдбара — видимая вертикальная линия */
+[data-testid="stSidebar"] div[style*="col-resize"] {{
+    background: linear-gradient(to right,
+        transparent 2px, var(--border-strong) 2px,
+        var(--border-strong) 4px, transparent 4px) !important;
+    transition: background .12s;
+}}
+[data-testid="stSidebar"] div[style*="col-resize"]:hover {{
+    background: linear-gradient(to right,
+        transparent 1px, var(--accent) 1px,
+        var(--accent) 5px, transparent 5px) !important;
 }}
 [data-testid="stSidebar"] .stMarkdown h3 {{
     font-size: 14px !important; font-weight: 600 !important;
