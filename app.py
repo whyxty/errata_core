@@ -7,7 +7,7 @@ from modules.tasks import (
     task_v11, task_v12, task_v13, task_v14, task_v15,
 )
 
-st.set_page_config(page_title="StimCore — ГКО", page_icon="◆", layout="wide")
+st.set_page_config(page_title="StimCore — ГКО", page_icon="🗡️", layout="wide")
 apply_theme()
 
 # Константы месторождения грузятся из gko_config.json (без экрана редактирования)
