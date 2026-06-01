@@ -259,14 +259,12 @@ def render(cfg: dict):
         st.session_state["v12_p_opr"] = c3.number_input(
             "pопр, МПа — давление опрессовки колонны", value=float(st.session_state["v12_p_opr"]), step=0.5)
 
-        c1, c2, c3 = st.columns(3)
+        c1, c2 = st.columns(2)
         st.session_state["v12_H_top"] = c1.number_input(
             "Кровля обрабатываемого интервала, м", value=float(st.session_state["v12_H_top"]), step=10.0)
         st.session_state["v12_H_bot"] = c2.number_input(
             "Подошва обрабатываемого интервала, м", value=float(st.session_state["v12_H_bot"]), step=10.0)
-        st.session_state["v12_well_type"] = c3.selectbox(
-            "Тип скважины", ["нефтяная", "водонагнетательная"],
-            index=0 if st.session_state["v12_well_type"] == "нефтяная" else 1)
+        st.session_state["v12_well_type"] = "нефтяная"
 
         st.session_state["v12_grad_grp_mode"] = st.radio(
             "Источник градиента ГРП (grad pгрп)",
