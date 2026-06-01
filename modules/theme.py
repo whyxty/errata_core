@@ -163,17 +163,31 @@ code {{
     background: var(--bg-subtle) !important;
     border-right: 1px solid var(--border-strong);
 }}
-/* ручка изменения ширины сайдбара — видимая вертикальная линия */
+/* ручка изменения ширины сайдбара — видимая линия + грип по центру */
 [data-testid="stSidebar"] div[style*="col-resize"] {{
     background: linear-gradient(to right,
-        transparent 2px, var(--border-strong) 2px,
-        var(--border-strong) 4px, transparent 4px) !important;
+        transparent 2px, #c2c8cf 2px, #c2c8cf 5px, transparent 5px) !important;
     transition: background .12s;
+    z-index: 10 !important;
+}}
+[data-testid="stSidebar"] div[style*="col-resize"]::after {{
+    content: "";
+    position: absolute;
+    top: 50%; left: 1px;
+    transform: translateY(-50%);
+    width: 5px; height: 44px;
+    border-radius: 3px;
+    background: var(--text-3);
+    box-shadow: var(--sh-sm);
+    transition: background .12s, height .12s;
 }}
 [data-testid="stSidebar"] div[style*="col-resize"]:hover {{
     background: linear-gradient(to right,
-        transparent 1px, var(--accent) 1px,
-        var(--accent) 5px, transparent 5px) !important;
+        transparent 2px, var(--accent) 2px, var(--accent) 5px, transparent 5px) !important;
+}}
+[data-testid="stSidebar"] div[style*="col-resize"]:hover::after {{
+    background: var(--accent);
+    height: 64px;
 }}
 [data-testid="stSidebar"] .stMarkdown h3 {{
     font-size: 14px !important; font-weight: 600 !important;
