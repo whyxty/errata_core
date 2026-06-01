@@ -584,16 +584,5 @@ def stimcore_header(title: str = "StimCore", subtitle: str = "ГКО"):
             ">{subtitle}</div>
         </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="
-            font-family: var(--mono); font-size: 11px; color: var(--text-3);
-            background: var(--bg-subtle); border: 1px solid var(--border);
-            border-radius: 20px; padding: 3px 10px;
-        ">v0.1 · streamlit</div>
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2);">
-            <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block;"></span>
-            online
-        </div>
-    </div>
 </div>
     """, unsafe_allow_html=True)
