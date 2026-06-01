@@ -558,8 +558,8 @@ def stimcore_header(title: str = "StimCore", subtitle: str = "ГКО"):
     st.markdown(f"""
 <div style="
     display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 2px 16px; margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
+    padding: 20px 2px 16px; margin-bottom: 20px;
+    border-bottom: 1px solid var(--border); overflow: visible;
 ">
     <div style="display: flex; align-items: center; gap: 13px;">
         <div style="
@@ -574,7 +574,8 @@ def stimcore_header(title: str = "StimCore", subtitle: str = "ГКО"):
         <div>
             <div style="
                 font-family: var(--sans); font-size: 19px; font-weight: 700;
-                color: var(--text); letter-spacing: -0.02em; line-height: 1.15;
+                color: var(--text); letter-spacing: -0.02em; line-height: 1.35;
+                padding-top: 2px;
             ">{title}</div>
             <div style="
                 font-family: var(--mono); font-size: 10px; font-weight: 500;
