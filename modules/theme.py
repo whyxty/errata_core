@@ -525,10 +525,14 @@ def stimcore_header(title: str = "StimCore", subtitle: str = "ГКО"):
     <div style="display: flex; align-items: center; gap: 12px;">
         <div style="
             width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
-            background: var(--accent); color: #fff; display: grid; place-items: center;
-            font-size: 16px; font-weight: 700; box-shadow: var(--sh-sm);
-            font-family: var(--sans);
-        ">◆</div>
+            background: var(--accent); display: grid; place-items: center;
+            box-shadow: var(--sh-sm);
+        "><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 2.5 21.5 12 12 21.5 2.5 12 12 2.5Z"
+                  fill="#fff" stroke="#fff" stroke-width="1.5"
+                  stroke-linejoin="round"/>
+        </svg></div>
         <div>
             <div style="
                 font-family: var(--sans); font-size: 16px; font-weight: 600;
