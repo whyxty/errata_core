@@ -163,27 +163,30 @@ code {{
     background: var(--bg-subtle) !important;
     border-right: 1px solid var(--border-strong);
 }}
-/* ручка изменения ширины сайдбара — видимая линия + грип по центру */
-[data-testid="stSidebar"] div[style*="col-resize"] {{
-    background: linear-gradient(to right,
-        transparent 2px, #c2c8cf 2px, #c2c8cf 5px, transparent 5px) !important;
-    transition: background .12s;
-    z-index: 10 !important;
+/* ручка изменения ширины сайдбара — всегда видимая линия + грип по центру */
+[data-testid="stSidebar"] div[style*="col-resize"] > div {{
+    background: #b8bec6 !important;
+    width: 3px !important;
+    height: 100% !important;
+    margin: 0 auto !important;
+    opacity: 1 !important;
+    transition: background .12s, width .12s;
+}}
+[data-testid="stSidebar"] div[style*="col-resize"]:hover > div {{
+    background: var(--accent) !important;
+    width: 4px !important;
 }}
 [data-testid="stSidebar"] div[style*="col-resize"]::after {{
     content: "";
     position: absolute;
-    top: 50%; left: 1px;
-    transform: translateY(-50%);
-    width: 5px; height: 44px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px; height: 46px;
     border-radius: 3px;
     background: var(--text-3);
     box-shadow: var(--sh-sm);
+    z-index: 2;
     transition: background .12s, height .12s;
-}}
-[data-testid="stSidebar"] div[style*="col-resize"]:hover {{
-    background: linear-gradient(to right,
-        transparent 2px, var(--accent) 2px, var(--accent) 5px, transparent 5px) !important;
 }}
 [data-testid="stSidebar"] div[style*="col-resize"]:hover::after {{
     background: var(--accent);
