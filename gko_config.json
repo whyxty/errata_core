@@ -37,6 +37,16 @@
     "alpha_kgo": 0.1,
     "comment_alpha": "Коэффициент в формуле kг.о = exp(-α·r). Для Предкарпатья = 0.1"
   },
+  "injection": {
+    "comment": "Градиенты давления для В.16 (нагнетание кислоты в пласт). Средние значения для Предкарпатья",
+    "grad_grp_oil": 1.8,
+    "grad_grp_water": 1.9,
+    "grad_pk_oil": 1.56,
+    "grad_pk_water": 1.73,
+    "q_pr": 24,
+    "rho_water": 1000,
+    "g": 9.8
+  },
   "rock_properties": {
     "rho_sk_min": 2600,
     "rho_sk_max": 2700,
