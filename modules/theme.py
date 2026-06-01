@@ -519,24 +519,23 @@ def stimcore_header(title: str = "StimCore", subtitle: str = "ГКО"):
     st.markdown(f"""
 <div style="
     display: flex; align-items: center; justify-content: space-between;
-    padding: 4px 2px 16px; margin-bottom: 18px;
+    padding: 10px 2px 16px; margin-bottom: 20px;
     border-bottom: 1px solid var(--border);
 ">
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 13px;">
         <div style="
-            width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+            width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
             background: var(--accent); display: grid; place-items: center;
             box-shadow: var(--sh-sm);
-        "><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+        "><svg width="22" height="22" viewBox="0 0 24 24"
                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M12 2.5 21.5 12 12 21.5 2.5 12 12 2.5Z"
-                  fill="#fff" stroke="#fff" stroke-width="1.5"
-                  stroke-linejoin="round"/>
+            <rect x="6.5" y="6.5" width="11" height="11" rx="1.5"
+                  transform="rotate(45 12 12)" fill="#fff"/>
         </svg></div>
         <div>
             <div style="
-                font-family: var(--sans); font-size: 16px; font-weight: 600;
-                color: var(--text); letter-spacing: -0.01em; line-height: 1.1;
+                font-family: var(--sans); font-size: 19px; font-weight: 700;
+                color: var(--text); letter-spacing: -0.02em; line-height: 1.15;
             ">{title}</div>
             <div style="
                 font-family: var(--mono); font-size: 10px; font-weight: 500;
