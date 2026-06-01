@@ -7,14 +7,14 @@ from modules.tasks import (
     task_v11, task_v12, task_v13, task_v14, task_v15,
 )
 
-st.set_page_config(page_title="StimCore — ГКО", page_icon="🗡️", layout="wide")
+st.set_page_config(page_title="ErrataCore — ГКО", page_icon="🗡️", layout="wide")
 apply_theme()
 
 # Константы месторождения грузятся из gko_config.json (без экрана редактирования)
 if "constants" not in st.session_state:
     st.session_state["constants"] = reset_to_default()
 
-stimcore_header("StimCore", "Глинокислотная обработка")
+stimcore_header("ErrataCore", "Глинокислотная обработка")
 
 # ───────────────────────── НАВИГАЦИЯ ─────────────────────────
 TASK_PAGES = [
@@ -39,7 +39,7 @@ def _on_tasks():
         st.session_state["page"] = st.session_state["_radio_tasks"]
 
 
-st.sidebar.markdown("### ◆ STIMCORE · ГКО")
+st.sidebar.markdown("### 🗡️ ERRATACORE · ГКО")
 page = st.session_state["page"]
 
 st.sidebar.markdown("##### ЗАДАЧИ ГКО")
