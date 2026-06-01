@@ -115,11 +115,16 @@ h1, h2, h3, h4, h5, h6 {{
     font-weight: 700 !important;
 }}
 h1 {{ font-size: 26px !important; }}
-h2 {{ font-size: 18px !important; }}
-h3 {{
-    font-size: 13px !important; color: var(--text-3) !important;
+h2 {{ font-size: 20px !important; }}
+h3 {{ font-size: 22px !important; color: var(--text) !important;
+      letter-spacing: -0.02em !important; font-weight: 700 !important; }}
+h4 {{ font-size: 15px !important; color: var(--text) !important;
+      font-weight: 600 !important; }}
+/* секционные подписи (#####) — мелкий серый капс */
+h5, h6 {{
+    font-size: 12px !important; color: var(--text-3) !important;
     text-transform: uppercase; letter-spacing: 0.04em !important;
-    font-weight: 600 !important;
+    font-weight: 600 !important; margin: 4px 0 6px !important;
 }}
 
 /* подзаголовки st.subheader */
@@ -157,6 +162,11 @@ code {{
 [data-testid="stSidebar"] {{
     background: var(--bg-subtle) !important;
     border-right: 1px solid var(--border);
+}}
+[data-testid="stSidebar"] .stMarkdown h3 {{
+    font-size: 14px !important; font-weight: 600 !important;
+    color: var(--text) !important; letter-spacing: -0.01em !important;
+    text-transform: none !important; margin: 2px 0 6px !important;
 }}
 [data-testid="stSidebar"] .stMarkdown h5 {{
     font-size: 11px !important; font-weight: 600 !important;

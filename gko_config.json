@@ -10,6 +10,29 @@
     "k_g_np": 1.1,
     "q_pr": 24
   },
+  "well_check": {
+    "comment": "Пороги и таблицы для проверки целесообразности выбора скважины (В.1–В.14)",
+    "m_gr": 8,
+    "h_pr": 5,
+    "ks_pr": 1.1,
+    "kg_pr": 1.1,
+    "C_k_pr": 3,
+    "C_gl_pr": 10,
+    "q_pr": 24,
+    "eps_ot_pr": 0.5,
+    "k_enr_pr": 0.7,
+    "kvo_low": 0.1,
+    "kvo_high": 0.5,
+    "rho_water": 1000,
+    "g": 9.81,
+    "specific_debit_table": [
+      {"m_min": 7,  "m_max": 9,   "q": 0.35},
+      {"m_min": 9,  "m_max": 11,  "q": 0.65},
+      {"m_min": 11, "m_max": 13,  "q": 2.0},
+      {"m_min": 13, "m_max": 15,  "q": 3.0},
+      {"m_min": 15, "m_max": 999, "q": 4.5}
+    ]
+  },
   "reaction_kinetics": {
     "alpha_kgo": 0.1,
     "comment_alpha": "Коэффициент в формуле kг.о = exp(-α·r). Для Предкарпатья = 0.1"
