@@ -2,7 +2,6 @@
 import streamlit as st
 
 from modules.constants import reset_to_default, empty_config
-from modules.input_data import render_input_form, init_session_defaults
 from modules.theme import apply_theme, stimcore_header
 from modules.tasks import (
     task_v11, task_v12, task_v13, task_v14, task_v15,
@@ -15,14 +14,12 @@ apply_theme()
 # Состояние констант — при первом запуске пусто
 if "constants" not in st.session_state:
     st.session_state["constants"] = empty_config()
-init_session_defaults()
 
 stimcore_header("StimCore", "Глинокислотная обработка")
 
 # ───────────────────────── НАВИГАЦИЯ (pipeline) ─────────────────────────
 PREP_PAGES = [
     "Месторождение",
-    "Данные скважины",
 ]
 TASK_PAGES = [
     "В.11 · Рецептура",
@@ -144,7 +141,7 @@ def render_constants_ui():
         st.session_state["constants"] = reset_to_default()
         st.rerun()
     if right.button("ДАЛЕЕ  →", use_container_width=True, key="btn_next", type="primary"):
-        st.session_state["_pending_page"] = "Данные скважины"
+        st.session_state["_pending_page"] = "В.11 · Рецептура"
         st.rerun()
 
 
@@ -163,8 +160,6 @@ TASK_RENDERERS = {
 cfg = st.session_state["constants"]
 if page == "Месторождение":
     render_constants_ui()
-elif page == "Данные скважины":
-    render_input_form()
 elif page in TASK_RENDERERS:
     TASK_RENDERERS[page](cfg)
 
