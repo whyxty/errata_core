@@ -168,7 +168,7 @@ def render_input_form():
         st.rerun()
     if right.button("К ЗАДАЧАМ  →", use_container_width=True,
                     key="btn_next_inputs", type="primary"):
-        st.session_state["_pending_page"] = "В.11 · Выбор скважины"
+        st.session_state["_pending_page"] = "Целесообразность ГКО"
         st.rerun()
 
 
