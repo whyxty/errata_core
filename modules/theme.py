@@ -4,7 +4,33 @@
 светлый фон, спокойный индиго-акцент, мягкие тени, Inter + JetBrains Mono.
 Применяется через `apply_theme()` сразу после st.set_page_config().
 """
+import base64
+import io
+from functools import lru_cache
+from pathlib import Path
+
 import streamlit as st
+
+ICON_PATH = Path(__file__).resolve().parent.parent / "assets" / "icon.png"
+
+
+@lru_cache(maxsize=1)
+def icon_data_uri(px: int = 96) -> str:
+    """PNG-иконку приложения → data-URI (с уменьшением до px для лёгкости)."""
+    try:
+        raw = ICON_PATH.read_bytes()
+        try:
+            from PIL import Image
+            im = Image.open(io.BytesIO(raw)).convert("RGBA")
+            im.thumbnail((px, px), Image.LANCZOS)
+            buf = io.BytesIO()
+            im.save(buf, format="PNG")
+            raw = buf.getvalue()
+        except Exception:
+            pass
+        return "data:image/png;base64," + base64.b64encode(raw).decode("ascii")
+    except Exception:
+        return ""
 
 
 # ──────── Дизайн-токены (StimCore UI Kit, light) ────────
@@ -562,20 +588,10 @@ def stimcore_header(title: str = "StimCore", subtitle: str = "ГКО"):
     border-bottom: 1px solid var(--border); overflow: visible;
 ">
     <div style="display: flex; align-items: center; gap: 13px;">
-        <div style="
+        <img src="{icon_data_uri()}" alt="ErrataCore" style="
             width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
-            background: #fff; border: 1px solid var(--border);
-            display: grid; place-items: center; box-shadow: var(--sh-sm);
-        "><svg width="26" height="26" viewBox="0 0 28 28" fill="none"
-               xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M12.5 16 Q19 9.5 25 5.2" stroke="#3a3f46" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M13.2 16.6 Q19.3 10.4 24.4 6.4" stroke="#9aa0a6" stroke-width="0.7" stroke-linecap="round"/>
-            <path d="M10.8 14.6 L14 18" stroke="#23272c" stroke-width="1.8" stroke-linecap="round"/>
-            <path d="M12.3 16.4 L4.6 21.4" stroke="#6b4a2b" stroke-width="3.1" stroke-linecap="round"/>
-            <circle cx="10.2" cy="17.8" r="0.5" fill="#fff"/>
-            <circle cx="8.4" cy="19" r="0.5" fill="#fff"/>
-            <circle cx="6.6" cy="20.2" r="0.5" fill="#fff"/>
-        </svg></div>
+            object-fit: cover; box-shadow: var(--sh-sm);
+        "/>
         <div>
             <div style="
                 font-family: var(--sans); font-size: 19px; font-weight: 700;

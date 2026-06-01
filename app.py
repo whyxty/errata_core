@@ -1,4 +1,6 @@
 """Главный Streamlit-файл калькулятора глинокислотной обработки (ГКО)."""
+from pathlib import Path
+
 import streamlit as st
 
 from modules.constants import reset_to_default
@@ -7,7 +9,9 @@ from modules.tasks import (
     task_v11, task_v12, task_v13, task_v14, task_v15,
 )
 
-st.set_page_config(page_title="ErrataCore — ГКО", page_icon="🗡️", layout="wide")
+_ICON_PATH = Path(__file__).resolve().parent / "assets" / "icon.png"
+_page_icon = str(_ICON_PATH) if _ICON_PATH.exists() else "◆"
+st.set_page_config(page_title="ErrataCore — ГКО", page_icon=_page_icon, layout="wide")
 apply_theme()
 
 # Константы месторождения грузятся из gko_config.json (без экрана редактирования)
@@ -39,7 +43,7 @@ def _on_tasks():
         st.session_state["page"] = st.session_state["_radio_tasks"]
 
 
-st.sidebar.markdown("### 🗡️ ERRATACORE · ГКО")
+st.sidebar.markdown("### ◆ ERRATACORE · ГКО")
 page = st.session_state["page"]
 
 st.sidebar.markdown("##### ЗАДАЧИ ГКО")
