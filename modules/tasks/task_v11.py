@@ -51,6 +51,20 @@ EXAMPLE = {
     ],
 }
 
+# ── Пример «только ГКО»: низкая карбонатность Cк < 3 % → СКО не применяют (В.7) ──
+EXAMPLE_GKO = {
+    "Kf": 16.0, "Kpot": 51.0, "Qf": 50.0, "q": 150.0,
+    "p_pl": 25.0, "H": 2800.0, "C_k": 2.0, "C_gl": 6.0,
+    "kms": 1.1, "kmg": 1.15, "h_pga": 17.0,
+    "layers": [
+        {"Интервал": "2733–2740", "hэф, м": 7.0,  "m0, %": 12.0, "k0, мкм²": 0.0210, "Обрабатываемый": True},
+        {"Интервал": "2756–2768", "hэф, м": 12.0, "m0, %": 9.8,  "k0, мкм²": 0.0030, "Обрабатываемый": False},
+        {"Интервал": "2785–2795", "hэф, м": 10.0, "m0, %": 13.9, "k0, мкм²": 0.0450, "Обрабатываемый": True},
+        {"Интервал": "2808–2820", "hэф, м": 12.0, "m0, %": 10.5, "k0, мкм²": 0.0080, "Обрабатываемый": False},
+        {"Интервал": "2823–2851", "hэф, м": 18.0, "m0, %": 9.6,  "k0, мкм²": 0.0030, "Обрабатываемый": False},
+    ],
+}
+
 
 # ─────────────────────── пороги из конфига ───────────────────────
 def _thresholds(cfg: dict) -> dict:
@@ -215,10 +229,12 @@ def _load_example(ex: dict):
 def render(cfg: dict):
     T = _thresholds(cfg)
 
-    title_col, btn_col = st.columns([5, 1])
+    title_col, b1_col, b2_col = st.columns([4, 1.2, 1.2])
     title_col.subheader("Проверка целесообразности выбора скважины для ГКО")
-    if btn_col.button("Пример", key="ex_v11", type="secondary", use_container_width=True):
+    if b1_col.button("Пример СКО→ГКО", key="ex_v11", type="secondary", use_container_width=True):
         _load_example(EXAMPLE); st.rerun()
+    if b2_col.button("Пример ГКО", key="ex_v11_gko", type="secondary", use_container_width=True):
+        _load_example(EXAMPLE_GKO); st.rerun()
 
     st.caption("Объединяет методики В.1 (критерий продуктивности ОП) и "
                "В.2 (критерий дебита ОД). Расчёт — в реальном времени.")
