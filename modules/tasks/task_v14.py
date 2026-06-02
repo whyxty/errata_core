@@ -54,10 +54,10 @@ def render(cfg: dict):
                "определений kmg (по данным о количестве карбонатов и глин — задача В.14).")
 
     with st.expander("📖 Формулы", expanded=False):
-        st.latex(r"DV_g = \rho_{\text{п}}\,DG_g / \rho_{\text{ск}} \tag{В.82}")
-        st.latex(r"m_g = m_s + DV_g \tag{В.83}")
-        st.latex(r"k_{mg} = m_g / m_s \tag{В.84}")
-        st.latex(r"k_{msg} = k_{ms}\,k_{mg} \tag{В.85}")
+        st.latex(r"DV_g = \rho_{\text{п}}\,DG_g / \rho_{\text{ск}} \quad\text{(В.82)}")
+        st.latex(r"m_g = m_s + DV_g \quad\text{(В.83)}")
+        st.latex(r"k_{mg} = m_g / m_s \quad\text{(В.84)}")
+        st.latex(r"k_{msg} = k_{ms}\,k_{mg} \quad\text{(В.85)}")
         st.markdown("*DGg — масс. доля растворённой породы (задача В.14); ρп, ρск — плотность "
                     "породы и скелета; ms, kms — пористость и рост пористости после СКР.*")
 

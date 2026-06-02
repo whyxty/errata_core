@@ -70,10 +70,10 @@ def render(cfg: dict):
                "для полного использования химической активности кислоты.")
 
     with st.expander("📖 Формулы", expanded=False):
-        st.latex(r"V_{\text{втс}} = 1{,}2\,V_{\text{з.р}s} \tag{В.56}")
-        st.latex(r"V_{\text{втс}} = 0{,}3\,V_{ks} \quad(\text{с запасом, если }V_{\text{з.р}s}\text{ неизвестен}) \tag{В.57}")
+        st.latex(r"V_{\text{втс}} = 1{,}2\,V_{\text{з.р}s} \quad\text{(В.56)}")
+        st.latex(r"V_{\text{втс}} = 0{,}3\,V_{ks} \quad\text{(В.57, с запасом)}")
         st.latex(r"V_{\text{прд}} = 0{,}785\left[\,d_{\text{в}}^2 H_{\text{н.о}} + "
-                 r"(D_{\text{к}}^2 - d_{\text{вн}}^2)(H_{\text{н.о}} - H_{\text{в.о}})\,\right] \tag{В.58}")
+                 r"(D_{\text{к}}^2 - d_{\text{вн}}^2)(H_{\text{н.о}} - H_{\text{в.о}})\,\right] \quad\text{(В.58)}")
         st.markdown("*dв, dвн — внутр./наруж. диаметр НКТ; Dк — внутр. диаметр ЭК; "
                     "Hн.о, Hв.о — глубина нижнего/верхнего отверстия перфорации.*")
 
