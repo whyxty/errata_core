@@ -203,12 +203,11 @@ def render(cfg: dict):
             "Подошва обрабатываемого интервала, м", value=float(st.session_state["v12_H_bot"]), step=10.0)
         st.session_state["v12_well_type"] = "нефтяная"
 
-        st.session_state["v12_grad_grp_mode"] = st.radio(
+        _grad_modes = ["Региональный градиент (табл.)", "По формуле (В.20)", "Измеренный (предв. ГРП)"]
+        st.session_state["v12_grad_grp_mode"] = st.selectbox(
             "Источник градиента ГРП (grad pгрп)",
-            ["Региональный градиент (табл.)", "По формуле (В.20)", "Измеренный (предв. ГРП)"],
-            index=["Региональный градиент (табл.)", "По формуле (В.20)", "Измеренный (предв. ГРП)"]
-            .index(st.session_state["v12_grad_grp_mode"]),
-            horizontal=True)
+            _grad_modes,
+            index=_grad_modes.index(st.session_state["v12_grad_grp_mode"]))
         if st.session_state["v12_grad_grp_mode"].startswith("Измеренный"):
             st.session_state["v12_grad_grp_meas"] = st.number_input(
                 "grad pгрп (измеренный), МПа/100 м",
