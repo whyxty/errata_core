@@ -193,6 +193,16 @@ def render(cfg: dict):
 
     st.dataframe(res_df.style.apply(_hi, axis=1), use_container_width=True, hide_index=True)
 
+    # ── подстановка В.86 по каждому варианту ──
+    st.markdown("##### Расчёт Ag (В.86)")
+    for row, r in results:
+        st.caption(f"Вариант {_vol_label(row)} м³:")
+        st.latex(
+            r"A_g = \frac{\ln(%.0f/%.1f)}{(%.3f/%.3f)\ln(%.2f/%.1f) + (%.3f/%.3f)\ln(%.2f/%.2f) + \ln(%.0f/%.2f)} = %.3f"
+            % (base["r_k"], base["r_c"], base["k_0"], r["kg"], r["rzrg"], base["r_c"],
+               base["k_0"], r["ks"], r["rzrs"], r["rzrg"], base["r_k"], r["rzrs"], r["Ag"])
+        )
+
     # ── вывод ──
     best_row, best = results[best_idx]
     st.success(
