@@ -46,7 +46,7 @@ def render(cfg: dict):
 
     title_col, btn_col = st.columns([5, 1.3])
     title_col.subheader("Изменение пористости песчаного коллектора")
-    if btn_col.button("Пример В.15.1", key="ex_v14", type="secondary", use_container_width=True):
+    if btn_col.button("Пример", key="ex_v14", type="secondary", use_container_width=True):
         _load_example(); st.rerun()
 
     st.caption("Ожидаемое изменение пористости песчаного коллектора после обработки "
@@ -61,13 +61,13 @@ def render(cfg: dict):
         st.markdown("*DGg — масс. доля растворённой породы (задача В.14); ρп, ρск — плотность "
                     "породы и скелета; ms, kms — пористость и рост пористости после СКР.*")
 
-    # ── инициализация (плотности — из общих данных скважины) ──
-    st.session_state.setdefault("v14_DG_g", 4.92)
-    st.session_state.setdefault("v14_rho_sk", float(inp.get("rho_sk") or 0.0) or 2700.0)
-    st.session_state.setdefault("v14_rho_p", float(inp.get("rho_p") or 0.0) or 2300.0)
-    st.session_state.setdefault("v14_m_s", 16.8)
-    st.session_state.setdefault("v14_k_ms", 1.2)
-    st.session_state.setdefault("v14_m_0", float(inp.get("m0") or 0.0) or 14.0)
+    # ── инициализация (пусто — данные вводит пользователь или кнопка «Пример») ──
+    st.session_state.setdefault("v14_DG_g", 0.0)
+    st.session_state.setdefault("v14_rho_sk", 0.0)
+    st.session_state.setdefault("v14_rho_p", 0.0)
+    st.session_state.setdefault("v14_m_s", 0.0)
+    st.session_state.setdefault("v14_k_ms", 0.0)
+    st.session_state.setdefault("v14_m_0", 0.0)
 
     with st.expander("Исходные данные", expanded=True):
         c1, c2, c3 = st.columns(3)
@@ -122,4 +122,4 @@ def render(cfg: dict):
             f"**Рост после ГКР:** kmg = {res['k_mg']:.2f}; "
             f"**суммарный рост (к начальной):** kmsg = {res['k_msg']:.2f}.")
     else:
-        st.info("Заполните исходные данные или нажмите «Пример В.15.1».")
+        st.info("Заполните исходные данные или нажмите «Пример».")
