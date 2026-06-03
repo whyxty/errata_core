@@ -53,7 +53,7 @@ def render(cfg: dict):
                "глинокислотным раствором. Применяют при отсутствии прямых лабораторных "
                "определений kmg (по данным о количестве карбонатов и глин — задача В.14).")
 
-    with st.expander("📖 Формулы", expanded=False):
+    with st.expander("Формулы", expanded=False):
         st.latex(r"DV_g = \rho_{\text{п}}\,DG_g / \rho_{\text{ск}} \quad\text{(В.82)}")
         st.latex(r"m_g = m_s + DV_g \quad\text{(В.83)}")
         st.latex(r"k_{mg} = m_g / m_s \quad\text{(В.84)}")
@@ -69,7 +69,7 @@ def render(cfg: dict):
     st.session_state.setdefault("v14_k_ms", 1.2)
     st.session_state.setdefault("v14_m_0", float(inp.get("m0") or 0.0) or 14.0)
 
-    with st.expander("📥 Исходные данные", expanded=True):
+    with st.expander("Исходные данные", expanded=True):
         c1, c2, c3 = st.columns(3)
         st.session_state["v14_DG_g"] = c1.number_input(
             "DGg, % — растворённая порода (В.14)", value=float(st.session_state["v14_DG_g"]), step=0.1, min_value=0.0)

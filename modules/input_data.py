@@ -58,14 +58,14 @@ def fill_example_inputs():
 
 
 def render_input_form():
-    st.header("📥 Исходные данные скважины (ГКО)")
+    st.header("Исходные данные скважины (ГКО)")
     st.caption("Эти данные используются всеми задачами ГКО. Заполните один раз "
                "и переходите к расчётам. ГКО — последовательная обработка: "
                "сначала СКР (HCl), затем ГКР (HCl + HF).")
 
     init_session_defaults()
 
-    with st.expander("🪪 Идентификация и общие параметры", expanded=True):
+    with st.expander("Идентификация и общие параметры", expanded=True):
         c1, c2, c3 = st.columns(3)
         with c1:
             st.session_state.well_name = st.text_input("Название скважины", st.session_state.well_name)
@@ -87,7 +87,7 @@ def render_input_form():
             st.session_state.m0 = st.number_input("Пористость m_0, % (В.13–В.15)", value=float(st.session_state.m0), step=0.5)
             st.session_state.k0 = st.number_input("Проницаемость k_0, мкм² (В.8, В.11, В.16)", value=float(st.session_state.k0), step=0.001, format="%.4f")
 
-    with st.expander("📊 Продуктивность и приёмистость", expanded=False):
+    with st.expander("Продуктивность и приёмистость", expanded=False):
         c1, c2, c3 = st.columns(3)
         with c1:
             st.session_state.Q_f = st.number_input("Q_ф фактический дебит, м³/сут (В.16)", value=float(st.session_state.Q_f))
@@ -97,7 +97,7 @@ def render_input_form():
         with c3:
             st.session_state.rho_n = st.number_input("Плотность нефти ρ_н, кг/м³ (В.16)", value=float(st.session_state.rho_n), step=10.0)
 
-    with st.expander("🪨 Состав породы и фильтрационные коэффициенты", expanded=False):
+    with st.expander("Состав породы и фильтрационные коэффициенты", expanded=False):
         c1, c2, c3 = st.columns(3)
         with c1:
             st.session_state.C_k = st.number_input("Карбонатность C_к, % (В.11, В.14)", value=float(st.session_state.C_k))
@@ -117,7 +117,7 @@ def render_input_form():
             index=int(st.session_state.K_collector_type) - 1,
         )
 
-    with st.expander("⚗ Параметры глинокислотной обработки (ГКР)", expanded=False):
+    with st.expander("Параметры глинокислотной обработки (ГКР)", expanded=False):
         c1, c2, c3 = st.columns(3)
         with c1:
             st.session_state.C0_HCl = st.number_input("Концентрация HCl в ГКР C_0, % (В.11, В.17)", value=float(st.session_state.C0_HCl), step=0.5)
@@ -134,7 +134,7 @@ def render_input_form():
         with c2:
             st.session_state.N_nf = st.number_input("Нафтеновые кислоты N_нф, % (В.11)", value=float(st.session_state.N_nf))
 
-    with st.expander("🧱 Конструкция скважины", expanded=False):
+    with st.expander("Конструкция скважины", expanded=False):
         c1, c2, c3 = st.columns(3)
         with c1:
             st.session_state.H_no = st.number_input("H_н.о — нижнее отв. перфорации, м (В.17)", value=float(st.session_state.H_no))
@@ -146,7 +146,7 @@ def render_input_form():
         with c3:
             st.session_state.rho_fluid = st.number_input("ρ продавочной жидкости, кг/м³ (В.17)", value=float(st.session_state.rho_fluid))
 
-    with st.expander("💰 Экономика", expanded=False):
+    with st.expander("Экономика", expanded=False):
         c1, c2, c3 = st.columns(3)
         with c1:
             st.session_state.T_n = st.number_input("Длительность повыш. дебита T_н, сут (В.16)", value=float(st.session_state.T_n))
@@ -155,7 +155,7 @@ def render_input_form():
         with c3:
             st.session_state.Sebest_n = st.number_input("Себестоимость С_н, руб/т (В.16)", value=float(st.session_state.Sebest_n))
 
-    with st.expander("📑 Таблица продуктивных пластов", expanded=False):
+    with st.expander("Таблица продуктивных пластов", expanded=False):
         df = pd.DataFrame(st.session_state.layers_table)
         edited = st.data_editor(df, num_rows="dynamic", use_container_width=True, key="layers_editor")
         st.session_state.layers_table = edited.to_dict("records")

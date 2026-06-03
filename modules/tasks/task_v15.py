@@ -89,7 +89,7 @@ def render(cfg: dict):
                "и экономическая эффективность обработки. Сравните варианты объёмов СКР+ГКР и "
                "выберите рациональный.")
 
-    with st.expander("📖 Формулы", expanded=False):
+    with st.expander("Формулы", expanded=False):
         st.latex(r"A_g = \frac{\ln(r_k/r_c)}{(k_0/k_g)\ln(r_{\text{з.рg}}/r_c) + "
                  r"(k_0/k_s)\ln(r_{\text{з.рs}}/r_{\text{з.рg}}) + \ln(r_k/r_{\text{з.рs}})} \quad\text{(В.86)}")
         st.latex(r"Q_g = A_g\,Q_\phi \quad\text{(В.87)}")
@@ -112,7 +112,7 @@ def render(cfg: dict):
     st.session_state.setdefault("v15_eps_ot", 0.5)
     st.session_state.setdefault("v15_variants", [dict(r) for r in _DEF_VARIANTS])
 
-    with st.expander("📥 Общие параметры скважины и экономика", expanded=True):
+    with st.expander("Общие параметры скважины и экономика", expanded=True):
         c1, c2, c3 = st.columns(3)
         st.session_state["v15_k_0"] = c1.number_input("k₀, мкм² — проницаемость до КО",
             value=float(st.session_state["v15_k_0"]), step=0.001, format="%.3f")

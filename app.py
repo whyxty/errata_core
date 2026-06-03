@@ -43,7 +43,7 @@ def _on_tasks():
         st.session_state["page"] = st.session_state["_radio_tasks"]
 
 
-st.sidebar.markdown("### ◆ ERRATACORE · ГКО")
+st.sidebar.markdown("### ERRATACORE · ГКО")
 page = st.session_state["page"]
 
 st.sidebar.markdown("##### ЗАДАЧИ ГКО")

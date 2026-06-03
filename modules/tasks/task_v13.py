@@ -69,7 +69,7 @@ def render(cfg: dict):
                "интервале перфорации; вытесняющая — перемещает СКР за пределы зоны растворения "
                "для полного использования химической активности кислоты.")
 
-    with st.expander("📖 Формулы", expanded=False):
+    with st.expander("Формулы", expanded=False):
         st.latex(r"V_{\text{втс}} = 1{,}2\,V_{\text{з.р}s} \quad\text{(В.56)}")
         st.latex(r"V_{\text{втс}} = 0{,}3\,V_{ks} \quad\text{(В.57, с запасом)}")
         st.latex(r"V_{\text{прд}} = 0{,}785\left[\,d_{\text{в}}^2 H_{\text{н.о}} + "
@@ -86,7 +86,7 @@ def render(cfg: dict):
     st.session_state.setdefault("v13_d_vn", float(inp.get("d_vn") or 0.0) or 0.073)
     st.session_state.setdefault("v13_d_v", float(inp.get("d_v") or 0.0) or 0.062)
 
-    with st.expander("📥 Исходные данные", expanded=True):
+    with st.expander("Исходные данные", expanded=True):
         c1, c2 = st.columns(2)
         st.session_state["v13_V_ks"] = c1.number_input(
             "Vks, м³ — объём СКР", value=float(st.session_state["v13_V_ks"]), step=0.5, min_value=0.0)

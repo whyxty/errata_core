@@ -186,7 +186,7 @@ def render(cfg: dict):
     st.caption("По кривой приёмистости pу = f(t) (рис. В.1) определяем квазиустойчивое "
                "давление на устье pк и обосновываем допустимые расход qк и давление КО.")
 
-    with st.expander("📖 Обозначения и условия", expanded=False):
+    with st.expander("Обозначения и условия", expanded=False):
         st.markdown("""
 | Символ | Значение | Условие |
 |---|---|---|
@@ -250,7 +250,7 @@ def render(cfg: dict):
                    f"(τ ≈ {tau:.1f} мин). Можете принять это значение ниже.")
 
     # ── параметры ──
-    with st.expander("📥 Параметры нагнетания и скважины", expanded=True):
+    with st.expander("Параметры нагнетания и скважины", expanded=True):
         c1, c2, c3 = st.columns(3)
         st.session_state["v12_q0"] = c1.number_input(
             "q0, м³/сут — расход пробного нагнетания", value=float(st.session_state["v12_q0"]), step=5.0)

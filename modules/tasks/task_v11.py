@@ -241,7 +241,7 @@ def render(cfg: dict):
     st.caption("Объединяет методики В.1 (критерий продуктивности ОП) и "
                "В.2 (критерий дебита ОД). Расчёт — в реальном времени.")
 
-    with st.expander("📖 Обозначения и критерии", expanded=False):
+    with st.expander("Обозначения и критерии", expanded=False):
         st.markdown("""
 | Символ | Значение | Условие |
 |---|---|---|
@@ -285,7 +285,7 @@ def render(cfg: dict):
     layers = st.session_state["v11_layers"]
 
     # ── скалярные данные ──
-    with st.expander("📥 Параметры скважины", expanded=True):
+    with st.expander("Параметры скважины", expanded=True):
         c1, c2, c3 = st.columns(3)
         st.session_state["v11_Kf"]   = c1.number_input("Kф, т/(сут·МПа) — факт. продуктивность",
             value=float(st.session_state["v11_Kf"]), step=1.0)
@@ -370,7 +370,7 @@ def render(cfg: dict):
 
     # ─────────────────────── Скин-фактор S ───────────────────────
     st.markdown("---")
-    st.markdown("##### 🧮 Скин-фактор S (качество призабойной зоны)")
+    st.markdown("##### Скин-фактор S (качество призабойной зоны)")
     st.caption("S — скин-фактор. S > 0 — загрязнение/ухудшение ПЗП; S < 0 — улучшение "
                "(эффект кислотной обработки); S = 0 — идеальная (теоретическая) скважина. "
                "Qф берётся из параметров скважины выше.")
