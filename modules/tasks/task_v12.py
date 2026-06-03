@@ -141,6 +141,16 @@ def render(cfg: dict):
     if btn_col.button("Пример В.3.1", key="ex_v12", type="secondary", use_container_width=True):
         _load_example(); st.rerun()
 
+    with st.expander("Формулы", expanded=False):
+        st.latex(r"q_к \ge q_{\text{пр}} \quad\text{(В.10)}")
+        st.latex(r"p_к \le p_{\text{опр}} \quad\text{(В.15)}")
+        st.latex(r"p_{\text{гст}} = \rho\,g\,H\cdot10^{-6} \quad\text{(В.19)}")
+        st.latex(r"\mathrm{grad}\,p_к = \frac{p_{\text{гст}} + p_к}{0{,}01\,H} \quad\text{(В.18)}")
+        st.latex(r"\mathrm{grad}\,p_{\text{грп}} = \frac{p_{\text{грп}}}{0{,}01\,H} \quad\text{(В.17)}")
+        st.latex(r"\mathrm{grad}\,p_{\text{грп}} = \frac{100\,(p_{\text{гст}} + 0{,}008\,H)}{H} "
+                 r"\quad\text{(В.20, если ГРП не исследован)}")
+        st.latex(r"\mathrm{grad}\,p_к < \mathrm{grad}\,p_{\text{грп}} \quad\text{(В.16)}")
+
     with st.expander("Обозначения и условия", expanded=False):
         st.markdown("""
 | Символ | Значение | Условие |
