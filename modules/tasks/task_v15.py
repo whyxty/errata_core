@@ -14,7 +14,6 @@ import math
 
 import pandas as pd
 import streamlit as st
-import plotly.graph_objects as go
 
 from modules.input_data import get_inputs
 
@@ -193,26 +192,6 @@ def render(cfg: dict):
         return ["background-color: #ecfdf3" if row.name == best_idx else ""] * len(row)
 
     st.dataframe(res_df.style.apply(_hi, axis=1), use_container_width=True, hide_index=True)
-
-    # ── подстановка В.86 для первой строки ──
-    row0, r0 = results[0]
-    st.markdown("##### Расчёт Ag (В.86) — первый вариант")
-    st.latex(
-        r"A_g = \frac{\ln(%.0f/%.1f)}{(%.3f/%.3f)\ln(%.2f/%.1f) + (%.3f/%.3f)\ln(%.2f/%.2f) + \ln(%.0f/%.2f)} = %.3f"
-        % (base["r_k"], base["r_c"], base["k_0"], r0["kg"], r0["rzrg"], base["r_c"],
-           base["k_0"], r0["ks"], r0["rzrs"], r0["rzrg"], base["r_k"], r0["rzrs"], r0["Ag"])
-    )
-
-    # ── диаграмма Эн ──
-    fig = go.Figure(go.Bar(
-        x=[(_vol_label(row) if _vol_label(row) != "—" else f"в.{i+1}") for i, (row, _) in enumerate(results)],
-        y=[r["E"] for _, r in results],
-        text=[f"{r['E']:.0f}" for _, r in results],
-        textposition="outside",
-        marker_color=["#16a34a" if i == best_idx else "#6366f1" for i in range(len(results))],
-    ))
-    fig.update_layout(height=320, margin=dict(l=10, r=10, t=20, b=10), yaxis_title="Эн, руб.")
-    st.plotly_chart(fig, use_container_width=True)
 
     # ── вывод ──
     best_row, best = results[best_idx]
