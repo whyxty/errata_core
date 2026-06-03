@@ -19,7 +19,13 @@ import plotly.graph_objects as go
 from modules.input_data import get_inputs
 
 
-_V_COLS = ["Объём СКР+ГКР", "rз.рs, м", "rз.рg, м", "ks, мкм²", "kg, мкм²", "Zко, руб"]
+_V_COLS = ["Vскр, м³", "Vгкр, м³", "rз.рs, м", "rз.рg, м", "ks, мкм²", "kg, мкм²", "Zко, руб"]
+
+
+def _vol_label(row: dict) -> str:
+    vs = float(row.get("Vскр, м³") or 0)
+    vg = float(row.get("Vгкр, м³") or 0)
+    return f"{vs:g}+{vg:g}" if (vs or vg) else "—"
 
 # Пример В.16.1 (табл. В.25). ks, kg для вариантов 6+6 и 9+9 приняты как для 3+3
 # (точные значения берут из табл. В.9/В.23/В.13 — поле редактируемое).
@@ -28,15 +34,11 @@ EXAMPLE_V16 = {
     "Q_f": 86.6, "T_n": 100.0, "rho_n": 0.84, "W_0": 81.9,
     "Ts_n": 150.0, "C_n": 80.0, "eps_ot": 1.0,
     "variants": [
-        {"Объём СКР+ГКР": "3+3", "rз.рs, м": 0.54, "rз.рg, м": 0.43, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 3000},
-        {"Объём СКР+ГКР": "6+6", "rз.рs, м": 0.76, "rз.рg, м": 0.61, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 4000},
-        {"Объём СКР+ГКР": "9+9", "rз.рs, м": 0.92, "rз.рg, м": 0.74, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 5000},
+        {"Vскр, м³": 3, "Vгкр, м³": 3, "rз.рs, м": 0.54, "rз.рg, м": 0.43, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 3000},
+        {"Vскр, м³": 6, "Vгкр, м³": 6, "rз.рs, м": 0.76, "rз.рg, м": 0.61, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 4000},
+        {"Vскр, м³": 9, "Vгкр, м³": 9, "rз.рs, м": 0.92, "rз.рg, м": 0.74, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 5000},
     ],
 }
-
-_DEF_VARIANTS = [
-    {"Объём СКР+ГКР": "3+3", "rз.рs, м": 0.54, "rз.рg, м": 0.43, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 3000},
-]
 
 
 # ─────────────────────── расчёт ───────────────────────
@@ -144,12 +146,13 @@ def render(cfg: dict):
     df = pd.DataFrame(st.session_state["v15_variants"])
     for c in _V_COLS:
         if c not in df.columns:
-            df[c] = "" if c == "Объём СКР+ГКР" else 0.0
+            df[c] = 0.0
     df = df[_V_COLS]
     edited = st.data_editor(
         df, num_rows="dynamic", use_container_width=True, key="v15_editor",
         column_config={
-            "Объём СКР+ГКР": st.column_config.TextColumn("Объём СКР+ГКР", width="small"),
+            "Vскр, м³": st.column_config.NumberColumn("Vскр, м³", format="%g"),
+            "Vгкр, м³": st.column_config.NumberColumn("Vгкр, м³", format="%g"),
             "rз.рs, м": st.column_config.NumberColumn("rз.рs, м", format="%.2f"),
             "rз.рg, м": st.column_config.NumberColumn("rз.рg, м", format="%.2f"),
             "ks, мкм²": st.column_config.NumberColumn("ks, мкм²", format="%.3f"),
@@ -175,7 +178,7 @@ def render(cfg: dict):
     # ── таблица результатов ──
     st.markdown("##### Результаты (табл. В.25)")
     res_df = pd.DataFrame([{
-        "Объём СКР+ГКР": row.get("Объём СКР+ГКР") or "—",
+        "Vскр+Vгкр, м³": _vol_label(row),
         "Радиус зоны раств., м": f"{r['rzrs']:.2f}+{r['rzrg']:.2f}",
         "Кратность Ag": f"{r['Ag']:.3f}",
         "Qg, м³/сут": f"{r['Qg']:.1f}",
@@ -202,7 +205,7 @@ def render(cfg: dict):
 
     # ── диаграмма Эн ──
     fig = go.Figure(go.Bar(
-        x=[(row.get("Объём СКР+ГКР") or f"в.{i+1}") for i, (row, _) in enumerate(results)],
+        x=[(_vol_label(row) if _vol_label(row) != "—" else f"в.{i+1}") for i, (row, _) in enumerate(results)],
         y=[r["E"] for _, r in results],
         text=[f"{r['E']:.0f}" for _, r in results],
         textposition="outside",
@@ -214,6 +217,6 @@ def render(cfg: dict):
     # ── вывод ──
     best_row, best = results[best_idx]
     st.success(
-        f"**Рациональный объём:** {best_row.get('Объём СКР+ГКР') or '—'} — "
+        f"**Рациональный объём:** {_vol_label(best_row)} м³ — "
         f"наибольшая эффективность Эн = {best['E']:.0f} руб. "
         f"(Ag = {best['Ag']:.3f}, Qg = {best['Qg']:.1f} м³/сут, ΔQн = {best['DQ']:.1f} т).")
