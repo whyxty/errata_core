@@ -14,7 +14,6 @@
     В.20  grad pгрп ≈ 100·(pгст + 0,008·H)/H   (если ГРП не исследован)
     В.16  grad pк < grad pгрп            — гидроразрыв не ожидается
 """
-import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
@@ -60,29 +59,6 @@ def _cfg_inj(cfg: dict) -> dict:
     }
 
 
-# ─────────────────────── аппроксимация кривой ───────────────────────
-def fit_saturation(t: np.ndarray, p: np.ndarray):
-    """Подгонка насыщающейся кривой pу = A·(1 − e^(−t/τ)).
-    Возвращает (A, τ) либо None, если подгонка не удалась.
-    A — асимптота (оценка квазиустойчивого pк)."""
-    try:
-        from scipy.optimize import curve_fit
-        if len(t) < 3 or np.ptp(p) <= 0:
-            return None
-
-        def f(x, A, tau):
-            return A * (1.0 - np.exp(-x / tau))
-
-        p0 = [float(np.max(p)), max(float(np.max(t)) / 3.0, 0.5)]
-        popt, _ = curve_fit(
-            f, t, p, p0=p0, maxfev=10000,
-            bounds=([0.0, 1e-3], [np.inf, np.inf]),
-        )
-        return float(popt[0]), float(popt[1])
-    except Exception:
-        return None
-
-
 # ─────────────────────── расчёт ───────────────────────
 def solve(params: dict, T: dict) -> dict:
     H_top, H_bot = params["H_top"], params["H_bot"]
@@ -122,25 +98,16 @@ def solve(params: dict, T: dict) -> dict:
 
 
 # ─────────────────────── график ───────────────────────
-def build_chart(pts: pd.DataFrame, res: dict, fit, show_fit: bool, show_V: bool):
+def build_chart(pts: pd.DataFrame, res: dict):
     t = pts["t, мин"].to_numpy(dtype=float)
     p = pts["pу, МПа"].to_numpy(dtype=float)
 
     fig = go.Figure()
-    # измеренные точки + сглаживающая линия (построение «по значениям»)
+    # измеренные точки + сглаживающая линия
     fig.add_trace(go.Scatter(
         x=t, y=p, mode="lines+markers", name="pу (замеры)",
         line=dict(shape="spline", width=2.5), marker=dict(size=7),
     ))
-    # аппроксимация «по функции» pу = A·(1 − e^(−t/τ))
-    if show_fit and fit is not None and len(t) > 0:
-        A, tau = fit
-        tt = np.linspace(float(np.min(t)), float(np.max(t)), 200)
-        pp = A * (1.0 - np.exp(-tt / tau))
-        fig.add_trace(go.Scatter(
-            x=tt, y=pp, mode="lines", name=f"аппрокс. A·(1−e^(−t/τ)), A={A:.1f}",
-            line=dict(dash="dot", width=2),
-        ))
 
     # линия квазиустойчивого pк
     fig.add_hline(y=res["p_k"], line_dash="dash", line_color="#16a34a",
@@ -149,15 +116,6 @@ def build_chart(pts: pd.DataFrame, res: dict, fit, show_fit: bool, show_V: bool)
     if res["p_opr"] > 0:
         fig.add_hline(y=res["p_opr"], line_dash="dot", line_color="#dc2626",
                       annotation_text=f"pопр = {res['p_opr']:.1f} МПа", annotation_position="top right")
-
-    # объём V на второй оси
-    if show_V and "V, м³" in pts.columns and pts["V, м³"].abs().sum() > 0:
-        fig.add_trace(go.Scatter(
-            x=t, y=pts["V, м³"].to_numpy(dtype=float), mode="lines+markers",
-            name="V (закачано)", yaxis="y2",
-            line=dict(shape="spline", width=2, dash="dashdot"), marker=dict(size=5),
-        ))
-        fig.update_layout(yaxis2=dict(title="V, м³", overlaying="y", side="right", showgrid=False))
 
     fig.update_layout(
         height=420, margin=dict(l=10, r=10, t=30, b=10),
@@ -235,20 +193,6 @@ def render(cfg: dict):
     pts = pts[pd.to_numeric(pts["t, мин"], errors="coerce").notna()]
     pts = pts.sort_values("t, мин").reset_index(drop=True)
 
-    # ── аппроксимация и оценка pк ──
-    fit = None
-    if len(pts) >= 3:
-        fit = fit_saturation(pts["t, мин"].to_numpy(float), pts["pу, МПа"].to_numpy(float))
-
-    cc1, cc2 = st.columns([1, 1])
-    show_fit = cc1.checkbox("Аппроксимация кривой (по функции)", value=True, key="v12_showfit")
-    show_V = cc2.checkbox("Показать объём V", value=True, key="v12_showV")
-
-    if fit is not None:
-        A, tau = fit
-        st.caption(f"Оценка плато (асимптота аппроксимации): **pк ≈ {A:.1f} МПа** "
-                   f"(τ ≈ {tau:.1f} мин). Можете принять это значение ниже.")
-
     # ── параметры ──
     with st.expander("Параметры нагнетания и скважины", expanded=True):
         c1, c2, c3 = st.columns(3)
@@ -290,8 +234,7 @@ def render(cfg: dict):
     # ── график ──
     st.markdown("##### Кривая приёмистости")
     if len(pts) >= 2:
-        st.plotly_chart(build_chart(pts, res, fit, show_fit, show_V),
-                        use_container_width=True)
+        st.plotly_chart(build_chart(pts, res), use_container_width=True)
     else:
         st.info("Введите минимум 2 точки кривой pу = f(t).")
 
