@@ -7,7 +7,6 @@
 """
 import pandas as pd
 import streamlit as st
-import plotly.graph_objects as go
 
 from modules.input_data import get_inputs
 
@@ -139,18 +138,6 @@ def render(cfg: dict):
          "Значение, м³": f"{res['V_vts_57']:.2f}" if res["V_vts_57"] is not None else "—"},
     ])
     st.dataframe(vts_df, use_container_width=True, hide_index=True)
-
-    # ── диаграмма ──
-    if res["V_prd"] is not None and res["V_vts"] is not None:
-        fig = go.Figure(go.Bar(
-            x=["Продавочная Vпрд", "Вытесняющая Vвтс"],
-            y=[res["V_prd"], res["V_vts"]],
-            text=[f"{res['V_prd']:.2f}", f"{res['V_vts']:.2f}"],
-            textposition="outside",
-        ))
-        fig.update_layout(height=300, margin=dict(l=10, r=10, t=20, b=10),
-                          yaxis_title="V, м³")
-        st.plotly_chart(fig, use_container_width=True)
 
     # ── заключение ──
     if res["V_prd"] is not None and res["V_vts"] is not None:
