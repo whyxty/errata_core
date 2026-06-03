@@ -138,7 +138,7 @@ def render(cfg: dict):
 
     title_col, btn_col = st.columns([5, 1.3])
     title_col.subheader("Расход жидкости и давление при нагнетании кислоты в пласт")
-    if btn_col.button("Пример В.3.1", key="ex_v12", type="secondary", use_container_width=True):
+    if btn_col.button("Пример", key="ex_v12", type="secondary", use_container_width=True):
         _load_example(); st.rerun()
 
     with st.expander("Формулы", expanded=False):
@@ -165,16 +165,16 @@ def render(cfg: dict):
 | `grad pк < grad pгрп` | гидроразрыв не ожидается (В.16) | — |
 """)
 
-    # ── инициализация ──
-    st.session_state.setdefault("v12_points", [dict(r) for r in EXAMPLE_POINTS])
-    st.session_state.setdefault("v12_q0", 225.0)
-    st.session_state.setdefault("v12_p_k", 12.0)
-    st.session_state.setdefault("v12_H_top", float(inp.get("H") or 0.0) or 1840.0)
-    st.session_state.setdefault("v12_H_bot", 1960.0)
-    st.session_state.setdefault("v12_p_opr", float(inp.get("p_opr") or 0.0) or 20.0)
-    st.session_state.setdefault("v12_well_type", inp.get("well_type") or "нефтяная")
+    # ── инициализация (пусто — данные вводит пользователь или кнопка «Пример») ──
+    st.session_state.setdefault("v12_points", [])
+    st.session_state.setdefault("v12_q0", 0.0)
+    st.session_state.setdefault("v12_p_k", 0.0)
+    st.session_state.setdefault("v12_H_top", 0.0)
+    st.session_state.setdefault("v12_H_bot", 0.0)
+    st.session_state.setdefault("v12_p_opr", 0.0)
+    st.session_state.setdefault("v12_well_type", "нефтяная")
     st.session_state.setdefault("v12_grad_grp_mode", "Региональный градиент (табл.)")
-    st.session_state.setdefault("v12_grad_grp_meas", 1.8)
+    st.session_state.setdefault("v12_grad_grp_meas", 0.0)
 
     # ── точки кривой ──
     st.markdown("##### Точки кривой приёмистости pу = f(t) (с рис. В.1)")
