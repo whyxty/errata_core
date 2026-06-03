@@ -148,7 +148,7 @@ def render(cfg: dict):
         st.latex(r"\mathrm{grad}\,p_к = \frac{p_{\text{гст}} + p_к}{0{,}01\,H} \quad\text{(В.18)}")
         st.latex(r"\mathrm{grad}\,p_{\text{грп}} = \frac{p_{\text{грп}}}{0{,}01\,H} \quad\text{(В.17)}")
         st.latex(r"\mathrm{grad}\,p_{\text{грп}} = \frac{100\,(p_{\text{гст}} + 0{,}008\,H)}{H} "
-                 r"\quad\text{(В.20, если ГРП не исследован)}")
+                 r"\quad\text{(В.20)}")
         st.latex(r"\mathrm{grad}\,p_к < \mathrm{grad}\,p_{\text{грп}} \quad\text{(В.16)}")
 
     with st.expander("Обозначения и условия", expanded=False):
