@@ -82,7 +82,7 @@ def render(cfg: dict):
 
     title_col, btn_col = st.columns([5, 1.3])
     title_col.subheader("Технологическая и экономическая эффективность ГКО")
-    if btn_col.button("Пример В.16.1", key="ex_v15", type="secondary", use_container_width=True):
+    if btn_col.button("Пример", key="ex_v15", type="secondary", use_container_width=True):
         _load_example(); st.rerun()
 
     st.caption("Степень увеличения дебита при притоке через две зоны растворения (СКР и ГКР) "
@@ -99,18 +99,18 @@ def render(cfg: dict):
         st.latex(r"\mathit{Э}_{\text{н}} = (\mathit{Ц}_{\text{н}} - C_{\text{н}})\,DQ_{\text{н}} - Z_{\text{ко}} \quad\text{(В.91)}")
 
     # ── инициализация (часть — из общих данных скважины) ──
-    st.session_state.setdefault("v15_k_0", float(inp.get("k0") or 0.0) or 0.044)
-    st.session_state.setdefault("v15_r_c", float(inp.get("r_c") or 0.0) or 0.1)
-    st.session_state.setdefault("v15_r_k", float(inp.get("r_k") or 0.0) or 200.0)
-    st.session_state.setdefault("v15_Q_f", float(inp.get("Q_f") or 0.0) or 86.6)
-    st.session_state.setdefault("v15_T_n", float(inp.get("T_n") or 0.0) or 100.0)
-    st.session_state.setdefault("v15_rho_n", 0.84)
-    st.session_state.setdefault("v15_W_0", float(inp.get("W_0") or 0.0) or 81.9)
-    st.session_state.setdefault("v15_Ts_n", 150.0)
-    st.session_state.setdefault("v15_C_n", 80.0)
+    st.session_state.setdefault("v15_k_0", 0.0)
+    st.session_state.setdefault("v15_r_c", 0.0)
+    st.session_state.setdefault("v15_r_k", 0.0)
+    st.session_state.setdefault("v15_Q_f", 0.0)
+    st.session_state.setdefault("v15_T_n", 0.0)
+    st.session_state.setdefault("v15_rho_n", 0.0)
+    st.session_state.setdefault("v15_W_0", 0.0)
+    st.session_state.setdefault("v15_Ts_n", 0.0)
+    st.session_state.setdefault("v15_C_n", 0.0)
     st.session_state.setdefault("v15_use_eps", False)
     st.session_state.setdefault("v15_eps_ot", 0.5)
-    st.session_state.setdefault("v15_variants", [dict(r) for r in _DEF_VARIANTS])
+    st.session_state.setdefault("v15_variants", [])
 
     with st.expander("Общие параметры скважины и экономика", expanded=True):
         c1, c2, c3 = st.columns(3)
@@ -177,7 +177,7 @@ def render(cfg: dict):
 
     if not results:
         st.info("Заполните корректные варианты (r_c < rз.рg < rз.рs < r_k; ks, kg > 0) "
-                "или нажмите «Пример В.16.1».")
+                "или нажмите «Пример».")
         return
 
     # ── таблица результатов ──
