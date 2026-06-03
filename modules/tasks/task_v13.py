@@ -61,7 +61,7 @@ def render(cfg: dict):
 
     title_col, btn_col = st.columns([5, 1.3])
     title_col.subheader("Объёмы продавочной и вытесняющей жидкости")
-    if btn_col.button("Пример В.10.1", key="ex_v13", type="secondary", use_container_width=True):
+    if btn_col.button("Пример", key="ex_v13", type="secondary", use_container_width=True):
         _load_example(); st.rerun()
 
     st.caption("Определить объёмы продавочной и вытесняющей жидкости для кислотной обработки. "
@@ -77,14 +77,14 @@ def render(cfg: dict):
         st.markdown("*dв, dвн — внутр./наруж. диаметр НКТ; Dк — внутр. диаметр ЭК; "
                     "Hн.о, Hв.о — глубина нижнего/верхнего отверстия перфорации.*")
 
-    # ── инициализация (по умолчанию — из общих данных скважины) ──
-    st.session_state.setdefault("v13_V_ks", 6.0)
-    st.session_state.setdefault("v13_V_zrs", 0.9)
-    st.session_state.setdefault("v13_H_no", float(inp.get("H_no") or 0.0) or 2823.0)
-    st.session_state.setdefault("v13_H_vo", float(inp.get("H_vo") or 0.0) or 2733.0)
-    st.session_state.setdefault("v13_D_k", float(inp.get("D_k") or 0.0) or 0.124)
-    st.session_state.setdefault("v13_d_vn", float(inp.get("d_vn") or 0.0) or 0.073)
-    st.session_state.setdefault("v13_d_v", float(inp.get("d_v") or 0.0) or 0.062)
+    # ── инициализация (пусто — данные вводит пользователь или кнопка «Пример») ──
+    st.session_state.setdefault("v13_V_ks", 0.0)
+    st.session_state.setdefault("v13_V_zrs", 0.0)
+    st.session_state.setdefault("v13_H_no", 0.0)
+    st.session_state.setdefault("v13_H_vo", 0.0)
+    st.session_state.setdefault("v13_D_k", 0.0)
+    st.session_state.setdefault("v13_d_vn", 0.0)
+    st.session_state.setdefault("v13_d_v", 0.0)
 
     with st.expander("Исходные данные", expanded=True):
         c1, c2 = st.columns(2)
@@ -158,4 +158,4 @@ def render(cfg: dict):
             f"**Продавочная жидкость:** Vпрд = {res['V_prd']:.2f} м³.  \n"
             f"**Вытесняющая жидкость:** Vвтс = {res['V_vts']:.2f} м³ ({res['V_vts_src']}).")
     else:
-        st.info("Заполните исходные данные или нажмите «Пример В.10.1».")
+        st.info("Заполните исходные данные или нажмите «Пример».")
