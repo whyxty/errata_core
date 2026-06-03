@@ -370,75 +370,76 @@ def render(cfg: dict):
 
     # ─────────────────────── Скин-фактор S ───────────────────────
     st.markdown("---")
-    with st.expander("🧮 Скин-фактор S (качество призабойной зоны)", expanded=True):
-        st.caption("S — скин-фактор. S > 0 — загрязнение/ухудшение ПЗП; S < 0 — улучшение "
-                   "(эффект кислотной обработки); S = 0 — идеальная (теоретическая) скважина.")
-        st.latex(r"Q_т = \frac{2\pi k h\,\Delta P}{\mu\left(\ln\frac{R_к}{r_c}+S\right)}"
-                 r"\qquad S = \ln\frac{R_к}{r_c}\left(\frac{Q_ф}{Q_т}-1\right)")
+    st.markdown("##### 🧮 Скин-фактор S (качество призабойной зоны)")
+    st.caption("S — скин-фактор. S > 0 — загрязнение/ухудшение ПЗП; S < 0 — улучшение "
+               "(эффект кислотной обработки); S = 0 — идеальная (теоретическая) скважина. "
+               "Qф берётся из параметров скважины выше.")
+    st.latex(r"Q_т = \frac{2\pi k h\,\Delta P}{\mu\left(\ln\frac{R_к}{r_c}+S\right)}"
+             r"\qquad S = \ln\frac{R_к}{r_c}\left(\frac{Q_ф}{Q_т}-1\right)")
 
-        st.session_state.setdefault("v11s_Rk", 200.0)
-        st.session_state.setdefault("v11s_rc", 0.1)
-        st.session_state.setdefault("v11s_mode", "Ввести Qт")
-        st.session_state.setdefault("v11s_Qt", 100.0)
-        st.session_state.setdefault("v11s_k", 0.05)
-        st.session_state.setdefault("v11s_h", 10.0)
-        st.session_state.setdefault("v11s_dP", 5.0)
-        st.session_state.setdefault("v11s_mu", 1.0)
+    st.session_state.setdefault("v11s_Rk", 200.0)
+    st.session_state.setdefault("v11s_rc", 0.1)
+    st.session_state.setdefault("v11s_mode", "Ввести Qт")
+    st.session_state.setdefault("v11s_Qt", 100.0)
+    st.session_state.setdefault("v11s_k", 0.05)
+    st.session_state.setdefault("v11s_h", 10.0)
+    st.session_state.setdefault("v11s_dP", 5.0)
+    st.session_state.setdefault("v11s_mu", 1.0)
 
-        c1, c2, c3 = st.columns(3)
-        st.session_state["v11s_Rk"] = c1.number_input("Rк, м — радиус контура питания",
-            value=float(st.session_state["v11s_Rk"]), step=10.0)
-        st.session_state["v11s_rc"] = c2.number_input("r_c, м — радиус скважины",
-            value=float(st.session_state["v11s_rc"]), step=0.01, format="%.3f")
-        Qf_skin = c3.number_input("Qф, м³/сут — фактический дебит (для S)",
-            value=float(st.session_state["v11_Qf"]), step=1.0)
+    Qf_skin = float(st.session_state["v11_Qf"])  # фактический дебит из параметров задачи
 
-        st.session_state["v11s_mode"] = st.radio(
-            "Теоретический дебит Qт", ["Ввести Qт", "Рассчитать по Дюпюи"],
-            index=0 if st.session_state["v11s_mode"] == "Ввести Qт" else 1, horizontal=True)
+    c1, c2 = st.columns(2)
+    st.session_state["v11s_Rk"] = c1.number_input("Rк, м — радиус контура питания",
+        value=float(st.session_state["v11s_Rk"]), step=10.0)
+    st.session_state["v11s_rc"] = c2.number_input("r_c, м — радиус скважины",
+        value=float(st.session_state["v11s_rc"]), step=0.01, format="%.3f")
 
-        Rk, rc = st.session_state["v11s_Rk"], st.session_state["v11s_rc"]
-        ln_ratio = math.log(Rk / rc) if (Rk > 0 and rc > 0 and Rk > rc) else None
+    st.session_state["v11s_mode"] = st.radio(
+        "Теоретический дебит Qт", ["Ввести Qт", "Рассчитать по Дюпюи"],
+        index=0 if st.session_state["v11s_mode"] == "Ввести Qт" else 1, horizontal=True)
 
-        if st.session_state["v11s_mode"] == "Ввести Qт":
-            st.session_state["v11s_Qt"] = st.number_input("Qт, м³/сут — теоретический дебит",
-                value=float(st.session_state["v11s_Qt"]), step=1.0)
-            Qt = st.session_state["v11s_Qt"]
+    Rk, rc = st.session_state["v11s_Rk"], st.session_state["v11s_rc"]
+    ln_ratio = math.log(Rk / rc) if (Rk > 0 and rc > 0 and Rk > rc) else None
+
+    if st.session_state["v11s_mode"] == "Ввести Qт":
+        st.session_state["v11s_Qt"] = st.number_input("Qт, м³/сут — теоретический дебит",
+            value=float(st.session_state["v11s_Qt"]), step=1.0)
+        Qt = st.session_state["v11s_Qt"]
+    else:
+        d1, d2, d3, d4 = st.columns(4)
+        st.session_state["v11s_k"] = d1.number_input("k, мкм²",
+            value=float(st.session_state["v11s_k"]), step=0.001, format="%.3f")
+        st.session_state["v11s_h"] = d2.number_input("h, м — эфф. толщина",
+            value=float(st.session_state["v11s_h"]), step=1.0)
+        st.session_state["v11s_dP"] = d3.number_input("ΔP, МПа — депрессия",
+            value=float(st.session_state["v11s_dP"]), step=0.5)
+        st.session_state["v11s_mu"] = d4.number_input("μ, мПа·с — вязкость",
+            value=float(st.session_state["v11s_mu"]), step=0.1)
+        # Q[м³/сут] = 2π·86.4·k·h·ΔP/(μ·ln(Rк/rc)); k[мкм²], ΔP[МПа], μ[мПа·с]
+        if ln_ratio and st.session_state["v11s_mu"] > 0:
+            Qt = (542.867 * st.session_state["v11s_k"] * st.session_state["v11s_h"]
+                  * st.session_state["v11s_dP"]) / (st.session_state["v11s_mu"] * ln_ratio)
+            st.caption(f"Qт (Дюпюи, S=0) = {Qt:.1f} м³/сут")
         else:
-            d1, d2, d3, d4 = st.columns(4)
-            st.session_state["v11s_k"] = d1.number_input("k, мкм²",
-                value=float(st.session_state["v11s_k"]), step=0.001, format="%.3f")
-            st.session_state["v11s_h"] = d2.number_input("h, м — эфф. толщина",
-                value=float(st.session_state["v11s_h"]), step=1.0)
-            st.session_state["v11s_dP"] = d3.number_input("ΔP, МПа — депрессия",
-                value=float(st.session_state["v11s_dP"]), step=0.5)
-            st.session_state["v11s_mu"] = d4.number_input("μ, мПа·с — вязкость",
-                value=float(st.session_state["v11s_mu"]), step=0.1)
-            # Q[м³/сут] = 2π·86.4·k·h·ΔP/(μ·ln(Rк/rc)); k[мкм²], ΔP[МПа], μ[мПа·с]
-            if ln_ratio and st.session_state["v11s_mu"] > 0:
-                Qt = (542.867 * st.session_state["v11s_k"] * st.session_state["v11s_h"]
-                      * st.session_state["v11s_dP"]) / (st.session_state["v11s_mu"] * ln_ratio)
-                st.caption(f"Qт (Дюпюи, S=0) = {Qt:.1f} м³/сут")
-            else:
-                Qt = 0.0
+            Qt = 0.0
 
-        # ── результат ──
-        if ln_ratio is None:
-            st.warning("Проверьте радиусы: нужно r_c < Rк, оба > 0.")
-        elif Qt <= 0:
-            st.warning("Qт должен быть больше 0.")
+    # ── результат ──
+    if ln_ratio is None:
+        st.warning("Проверьте радиусы: нужно r_c < Rк, оба > 0.")
+    elif Qt <= 0:
+        st.warning("Qт должен быть больше 0.")
+    else:
+        S = ln_ratio * (Qf_skin / Qt - 1.0)
+        cc1, cc2, cc3 = st.columns(3)
+        cc1.metric("ln(Rк/r_c)", f"{ln_ratio:.3f}")
+        cc2.metric("Qф/Qт", f"{Qf_skin / Qt:.3f}")
+        cc3.metric("S — скин-фактор", f"{S:+.2f}")
+        st.latex(r"S = \ln\frac{%.0f}{%.2f}\left(\frac{%.1f}{%.1f}-1\right) = %.2f"
+                 % (Rk, rc, Qf_skin, Qt, S))
+        if S > 0.5:
+            st.error(f"S = {S:+.2f} > 0 — призабойная зона загрязнена/ухудшена, "
+                     "обработка целесообразна.")
+        elif S < -0.5:
+            st.success(f"S = {S:+.2f} < 0 — ПЗП улучшена (эффект КО).")
         else:
-            S = ln_ratio * (Qf_skin / Qt - 1.0)
-            cc1, cc2, cc3 = st.columns(3)
-            cc1.metric("ln(Rк/r_c)", f"{ln_ratio:.3f}")
-            cc2.metric("Qф/Qт", f"{Qf_skin / Qt:.3f}")
-            cc3.metric("S — скин-фактор", f"{S:+.2f}")
-            st.latex(r"S = \ln\frac{%.0f}{%.2f}\left(\frac{%.1f}{%.1f}-1\right) = %.2f"
-                     % (Rk, rc, Qf_skin, Qt, S))
-            if S > 0.5:
-                st.error(f"S = {S:+.2f} > 0 — призабойная зона загрязнена/ухудшена, "
-                         "обработка целесообразна.")
-            elif S < -0.5:
-                st.success(f"S = {S:+.2f} < 0 — ПЗП улучшена (эффект КО).")
-            else:
-                st.info(f"S = {S:+.2f} ≈ 0 — близко к идеальной скважине.")
+            st.info(f"S = {S:+.2f} ≈ 0 — близко к идеальной скважине.")
