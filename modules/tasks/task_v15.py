@@ -26,7 +26,7 @@ _V_COLS = ["Объём СКР+ГКР", "rз.рs, м", "rз.рg, м", "ks, мкм
 EXAMPLE_V16 = {
     "k_0": 0.044, "r_c": 0.1, "r_k": 200.0,
     "Q_f": 86.6, "T_n": 100.0, "rho_n": 0.84, "W_0": 81.9,
-    "Ts_n": 150.0, "C_n": 80.0, "use_eps": False, "eps_ot": 0.5,
+    "Ts_n": 150.0, "C_n": 80.0, "eps_ot": 1.0,
     "variants": [
         {"Объём СКР+ГКР": "3+3", "rз.рs, м": 0.54, "rз.рg, м": 0.43, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 3000},
         {"Объём СКР+ГКР": "6+6", "rз.рs, м": 0.76, "rз.рg, м": 0.61, "ks, мкм²": 0.074, "kg, мкм²": 0.169, "Zко, руб": 4000},
@@ -54,13 +54,9 @@ def solve_variant(base: dict, row: dict):
         Ag = num / den
 
         Qf, Tn, rho, W0 = base["Q_f"], base["T_n"], base["rho_n"], base["W_0"]
-        if base["use_eps"]:
-            eps = base["eps_ot"]
-            Qg = Ag * eps * Qf + (1 - eps) * Qf                       # В.89
-            DQ = (Ag - 1) * eps * Qf * Tn * rho * (100 - W0) / 100    # В.90
-        else:
-            Qg = Ag * Qf                                             # В.87
-            DQ = (Qg - Qf) * Tn * rho * (100 - W0) / 100             # В.88
+        eps = base["eps_ot"]
+        Qg = Ag * eps * Qf + (1 - eps) * Qf                          # В.89
+        DQ = (Ag - 1) * eps * Qf * Tn * rho * (100 - W0) / 100       # В.90
         E = (base["Ts_n"] - base["C_n"]) * DQ - Z                    # В.91
         return {"Ag": Ag, "Qg": Qg, "DQ": DQ, "E": E, "Z": Z,
                 "rzrs": rzrs, "rzrg": rzrg, "ks": ks, "kg": kg}
@@ -108,8 +104,7 @@ def render(cfg: dict):
     st.session_state.setdefault("v15_W_0", 0.0)
     st.session_state.setdefault("v15_Ts_n", 0.0)
     st.session_state.setdefault("v15_C_n", 0.0)
-    st.session_state.setdefault("v15_use_eps", False)
-    st.session_state.setdefault("v15_eps_ot", 0.5)
+    st.session_state.setdefault("v15_eps_ot", 1.0)
     st.session_state.setdefault("v15_variants", [])
 
     with st.expander("Общие параметры скважины и экономика", expanded=True):
@@ -137,15 +132,12 @@ def render(cfg: dict):
         st.session_state["v15_C_n"] = c2.number_input("Cн, руб/т — себестоимость",
             value=float(st.session_state["v15_C_n"]), step=10.0)
 
-        st.session_state["v15_use_eps"] = st.checkbox(
-            "Учитывать охват εот (В.89/В.90) — рост дебита только обрабатываемых прослоев",
-            value=bool(st.session_state["v15_use_eps"]))
-        if st.session_state["v15_use_eps"]:
-            st.session_state["v15_eps_ot"] = st.number_input("εот — относит. гидропроводность (В.13)",
-                value=float(st.session_state["v15_eps_ot"]), step=0.05, min_value=0.0, max_value=1.0)
+        st.session_state["v15_eps_ot"] = st.number_input(
+            "εот — относит. гидропроводность обрабатываемых прослоёв (В.13), 1 = весь разрез",
+            value=float(st.session_state["v15_eps_ot"]), step=0.05, min_value=0.0, max_value=1.0)
 
     base = {k: st.session_state[f"v15_{k}"] for k in
-            ("k_0", "r_c", "r_k", "Q_f", "T_n", "rho_n", "W_0", "Ts_n", "C_n", "use_eps", "eps_ot")}
+            ("k_0", "r_c", "r_k", "Q_f", "T_n", "rho_n", "W_0", "Ts_n", "C_n", "eps_ot")}
 
     # ── таблица вариантов ──
     st.markdown("##### Варианты объёмов СКР+ГКР (rз.рs, rз.рg — из табл. В.9/В.23; ks, kg — В.13)")
