@@ -380,11 +380,11 @@ def render(cfg: dict):
     st.session_state.setdefault("v11s_Rk", 200.0)
     st.session_state.setdefault("v11s_rc", 0.1)
     st.session_state.setdefault("v11s_k", 0.05)
-    st.session_state.setdefault("v11s_h", 10.0)
     st.session_state.setdefault("v11s_dP", 5.0)
     st.session_state.setdefault("v11s_mu", 1.0)
 
     Qf_skin = float(st.session_state["v11_Qf"])  # фактический дебит из параметров задачи
+    h_sum = res["h_ef_sum"]                       # эфф. толщина — из таблицы разреза (выше)
 
     c1, c2, c3 = st.columns(3)
     st.session_state["v11s_Rk"] = c1.number_input("Rк, м — радиус контура питания",
@@ -394,20 +394,20 @@ def render(cfg: dict):
     st.session_state["v11s_k"] = c3.number_input("k, мкм² — проницаемость",
         value=float(st.session_state["v11s_k"]), step=0.001, format="%.3f")
 
-    d1, d2, d3 = st.columns(3)
-    st.session_state["v11s_h"] = d1.number_input("h, м — эфф. толщина",
-        value=float(st.session_state["v11s_h"]), step=1.0)
-    st.session_state["v11s_dP"] = d2.number_input("ΔP, МПа — депрессия",
+    d1, d2 = st.columns(2)
+    st.session_state["v11s_dP"] = d1.number_input("ΔP, МПа — депрессия",
         value=float(st.session_state["v11s_dP"]), step=0.5)
-    st.session_state["v11s_mu"] = d3.number_input("μ, мПа·с — вязкость",
+    st.session_state["v11s_mu"] = d2.number_input("μ, мПа·с — вязкость",
         value=float(st.session_state["v11s_mu"]), step=0.1)
+
+    st.caption(f"h = {h_sum:.1f} м — суммарная эфф. толщина из таблицы разреза (hэф_сум).")
 
     Rk, rc = st.session_state["v11s_Rk"], st.session_state["v11s_rc"]
     ln_ratio = math.log(Rk / rc) if (Rk > 0 and rc > 0 and Rk > rc) else None
 
     # Qт по Дюпюи (S=0): Q[м³/сут] = 2π·86.4·k·h·ΔP/(μ·ln(Rк/rc)); k[мкм²], ΔP[МПа], μ[мПа·с]
-    if ln_ratio and st.session_state["v11s_mu"] > 0:
-        Qt = (542.867 * st.session_state["v11s_k"] * st.session_state["v11s_h"]
+    if ln_ratio and st.session_state["v11s_mu"] > 0 and h_sum > 0:
+        Qt = (542.867 * st.session_state["v11s_k"] * h_sum
               * st.session_state["v11s_dP"]) / (st.session_state["v11s_mu"] * ln_ratio)
     else:
         Qt = 0.0
