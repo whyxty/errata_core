@@ -96,13 +96,19 @@ _CSS = """
 }}
 
 /* ─── глобально ─── */
-html, body, [class*="st-"], .stApp {{
+html, body, .stApp {{
     background-color: var(--bg) !important;
     color: var(--text) !important;
     font-family: var(--sans);
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+}}
+/* шрифт/цвет для элементов Streamlit, но БЕЗ принудительного фона
+   (иначе внутренняя обёртка кнопки красится белым поверх градиента) */
+[class*="st-"] {{
+    color: var(--text);
+    font-family: var(--sans);
 }}
 .stApp {{ background: var(--bg) !important; }}
 
