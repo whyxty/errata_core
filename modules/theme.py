@@ -345,76 +345,94 @@ code {{
     background: var(--accent) !important; border-color: var(--accent) !important;
 }}
 
-/* ─── buttons (pill + pulse «эхо», в цветах темы) ─── */
-.stButton, .stDownloadButton, .stFormSubmitButton {{ overflow: visible !important; }}
+/* ─── buttons (премиальный дизайн: градиент + блик + мягкая тень) ─── */
 .stButton button, .stDownloadButton button, .stFormSubmitButton button {{
     position: relative !important;
-    height: 42px !important;
-    padding: 0 30px !important;
-    border-radius: 100px !important;
+    height: 44px !important;
+    padding: 0 28px !important;
+    border-radius: 11px !important;
     font-family: var(--sans) !important;
     font-size: 13.5px !important;
     font-weight: 600 !important;
     letter-spacing: 0.01em !important;
     text-transform: none !important;
     border: 1px solid transparent !important;
-    overflow: visible !important;
-    transition: transform .2s, box-shadow .2s, background .2s, border-color .2s, color .2s !important;
+    overflow: hidden !important;
+    isolation: isolate;
+    transition: transform .22s cubic-bezier(.34,1.56,.64,1),
+                box-shadow .22s ease, border-color .2s, color .2s, filter .2s !important;
     animation: moveInBottom .45s ease-out backwards;
 }}
-.stButton button:hover, .stDownloadButton button:hover, .stFormSubmitButton button:hover {{
-    transform: translateY(-3px) !important;
-    box-shadow: 0 10px 20px rgba(16,24,40,0.18) !important;
-}}
-.stButton button:active, .stDownloadButton button:active, .stFormSubmitButton button:active {{
-    transform: translateY(-1px) !important;
-    box-shadow: 0 5px 10px rgba(16,24,40,0.16) !important;
-}}
-/* «эхо» через ::after */
-.stButton button::after, .stDownloadButton button::after, .stFormSubmitButton button::after {{
+/* блик-«шайн», пробегающий при наведении */
+.stButton button::before, .stDownloadButton button::before, .stFormSubmitButton button::before {{
     content: "";
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    border-radius: 100px;
-    z-index: -1;
-    transition: transform .4s, opacity .4s;
+    top: 0; left: -85%;
+    width: 55%; height: 100%;
+    background: linear-gradient(120deg, transparent 0%,
+                rgba(255,255,255,0.45) 50%, transparent 100%);
+    transform: skewX(-20deg);
+    transition: left .6s ease;
+    z-index: 1;
+    pointer-events: none;
 }}
-.stButton button:hover::after, .stDownloadButton button:hover::after,
-.stFormSubmitButton button:hover::after {{
-    transform: scaleX(1.4) scaleY(1.6);
-    opacity: 0;
+.stButton button:hover::before, .stDownloadButton button:hover::before,
+.stFormSubmitButton button:hover::before {{ left: 135%; }}
+
+.stButton button:active, .stDownloadButton button:active, .stFormSubmitButton button:active {{
+    transform: translateY(0) scale(0.98) !important;
 }}
-/* primary — индиго filled */
+
+/* primary — индиго-градиент */
 .stButton button[kind="primary"], button[kind="primary"] {{
-    background: var(--accent) !important;
+    background: linear-gradient(135deg, #5570f2 0%, var(--accent) 55%, #2f4ec0 100%) !important;
     color: #fff !important;
-    box-shadow: var(--sh-sm) !important;
+    box-shadow: 0 2px 6px rgba(59,91,219,0.30),
+                0 1px 2px rgba(16,24,40,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.18) !important;
 }}
-.stButton button[kind="primary"]::after {{ background: var(--accent) !important; }}
 .stButton button[kind="primary"]:hover, button[kind="primary"]:hover {{
-    background: var(--accent-hover) !important;
     color: #fff !important;
+    transform: translateY(-2px) !important;
+    filter: saturate(1.08) brightness(1.04) !important;
+    box-shadow: 0 10px 24px rgba(59,91,219,0.42),
+                0 3px 8px rgba(16,24,40,0.14),
+                inset 0 1px 0 rgba(255,255,255,0.25) !important;
 }}
-/* secondary — белый-ghost */
+
+/* secondary — белая с индиго-акцентом */
 .stButton button[kind="secondary"], button[kind="secondary"] {{
     background: #fff !important;
-    color: var(--text-2) !important;
-    border: 1px solid var(--border-strong) !important;
-    box-shadow: var(--sh-sm) !important;
+    color: var(--accent) !important;
+    border: 1.5px solid var(--accent-border) !important;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.06) !important;
 }}
-.stButton button[kind="secondary"]::after {{ background: #fff !important; }}
 .stButton button[kind="secondary"]:hover, button[kind="secondary"]:hover {{
-    color: var(--text) !important;
+    color: var(--accent-hover) !important;
     border-color: var(--accent) !important;
+    background: var(--accent-soft) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 18px rgba(59,91,219,0.16),
+                0 2px 5px rgba(16,24,40,0.08) !important;
 }}
+/* у белой кнопки блик мягче (на светлом фоне) */
+.stButton button[kind="secondary"]::before {{
+    background: linear-gradient(120deg, transparent 0%,
+                rgba(59,91,219,0.12) 50%, transparent 100%) !important;
+}}
+
 .stButton button:focus-visible {{
     outline: none !important;
     box-shadow: var(--ring) !important;
 }}
+.stButton button:disabled, .stButton button[disabled] {{
+    filter: grayscale(0.4) brightness(0.97) !important;
+    opacity: 0.6 !important; transform: none !important;
+    box-shadow: none !important; cursor: not-allowed !important;
+}}
 
 @keyframes moveInBottom {{
-    0%   {{ opacity: 0; transform: translateY(20px); }}
+    0%   {{ opacity: 0; transform: translateY(18px); }}
     100% {{ opacity: 1; transform: translateY(0); }}
 }}
 
