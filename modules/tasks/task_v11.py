@@ -25,6 +25,8 @@ import math
 import pandas as pd
 import streamlit as st
 
+from modules.ui import calc_gate, clear_result
+
 
 # ─────────────────────── значения по умолчанию ───────────────────────
 _DEF_SCALARS = {
@@ -229,7 +231,7 @@ def _load_example(ex: dict):
     # сменить ключ редактора → форсировать пере-инициализацию данными примера
     st.session_state["v11_editor_ver"] = st.session_state.get("v11_editor_ver", 0) + 1
     # только подставить данные; результат — по кнопке РАССЧИТАТЬ
-    st.session_state.pop("v11_res", None)
+    clear_result("v11")
 
 
 def render(cfg: dict):
@@ -325,16 +327,10 @@ def render(cfg: dict):
 
     scalars = {k: st.session_state[f"v11_{k}"] for k in _DEF_SCALARS}
 
-    # ── кнопка расчёта ──
-    st.markdown('<div style="height:6px"></div>', unsafe_allow_html=True)
-    do_calc = st.button("РАССЧИТАТЬ", key="v11_calc_btn", type="primary",
-                        use_container_width=True)
-    if do_calc:
-        st.session_state["v11_res"] = solve(scalars, layers, T)
-
-    res = st.session_state.get("v11_res")
+    # ── кнопка расчёта (общий паттерн для всех задач) ──
+    res = calc_gate("v11", lambda: solve(scalars, layers, T),
+                    prompt="Заполните разрез и параметры скважины, затем нажмите «РАССЧИТАТЬ».")
     if res is None:
-        st.info("Заполните разрез и параметры скважины, затем нажмите «РАССЧИТАТЬ».")
         return
 
     # ── метрики ──

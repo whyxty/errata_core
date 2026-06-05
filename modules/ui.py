@@ -1,0 +1,36 @@
+"""Общие UI-хелперы для задач ГКО.
+
+Единый паттерн для всех задач:
+- кнопка «РАССЧИТАТЬ» считает результат только по нажатию и замораживает его
+  в снимок (session_state), чтобы он не пересчитывался сам при правке полей;
+- «Пример» только подставляет данные (через clear_result результат прячется,
+  пока пользователь снова не нажмёт РАССЧИТАТЬ).
+"""
+import streamlit as st
+
+
+def calc_gate(task_id: str, compute_fn, *, prompt: str | None = None):
+    """Кнопка РАССЧИТАТЬ + заморозка результата в снимок.
+
+    task_id     — префикс ключей задачи (напр. "v11");
+    compute_fn  — функция без аргументов, вызывается ТОЛЬКО по нажатию кнопки,
+                  её возврат сохраняется как результат;
+    prompt      — подсказка, показываемая пока расчёта ещё не было.
+
+    Возвращает текущий снимок результата или None (если ещё не считали).
+    """
+    res_key = f"{task_id}_res"
+    st.markdown('<div style="height:6px"></div>', unsafe_allow_html=True)
+    if st.button("РАССЧИТАТЬ", key=f"{task_id}_calc_btn", type="primary",
+                 use_container_width=True):
+        st.session_state[res_key] = compute_fn()
+
+    res = st.session_state.get(res_key)
+    if res is None and prompt:
+        st.info(prompt)
+    return res
+
+
+def clear_result(task_id: str):
+    """Сбросить снимок результата задачи (вызывать при подстановке «Примера»)."""
+    st.session_state.pop(f"{task_id}_res", None)
