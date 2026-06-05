@@ -369,6 +369,11 @@ code {{
                 box-shadow .22s ease, border-color .2s, color .2s, filter .2s !important;
     animation: moveInBottom .45s ease-out backwards;
 }}
+/* подпись кнопки наследует её цвет (иначе markdown-<p> делает текст серым) */
+.stButton button *, .stDownloadButton button *, .stFormSubmitButton button * {{
+    color: inherit !important;
+    background: transparent !important;
+}}
 /* блик-«шайн», пробегающий при наведении */
 .stButton button::before, .stDownloadButton button::before, .stFormSubmitButton button::before {{
     content: "";
