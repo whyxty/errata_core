@@ -286,11 +286,33 @@ code {{
     font-weight: 500 !important;
     text-transform: none !important;
 }}
-/* степперы number_input */
-.stNumberInput button {{
+/* степперы number_input — тематический индиго-ховер */
+.stNumberInput button,
+[data-testid="stNumberInputStepUp"], [data-testid="stNumberInputStepDown"] {{
     background: var(--bg-subtle) !important;
     border-color: var(--border-strong) !important;
     color: var(--text-2) !important;
+    transition: background .12s, color .12s !important;
+}}
+.stNumberInput button:hover,
+[data-testid="stNumberInputStepUp"]:hover, [data-testid="stNumberInputStepDown"]:hover {{
+    background: var(--accent) !important;
+    color: #fff !important;
+}}
+.stNumberInput button:active,
+[data-testid="stNumberInputStepUp"]:active, [data-testid="stNumberInputStepDown"]:active {{
+    background: var(--accent-hover) !important;
+}}
+
+/* кнопки тулбара таблицы (data_editor): Add row и т.п. */
+[data-testid="stBaseButton-elementToolbar"] {{
+    border-radius: var(--r-sm) !important;
+    color: var(--text-2) !important;
+    transition: background .12s, color .12s !important;
+}}
+[data-testid="stBaseButton-elementToolbar"]:hover {{
+    background: var(--accent-soft) !important;
+    color: var(--accent) !important;
 }}
 
 /* ─── selectbox ─── */
