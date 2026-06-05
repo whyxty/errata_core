@@ -228,7 +228,8 @@ def _load_example(ex: dict):
     st.session_state["v11_layers"] = [dict(r) for r in ex["layers"]]
     # сменить ключ редактора → форсировать пере-инициализацию данными примера
     st.session_state["v11_editor_ver"] = st.session_state.get("v11_editor_ver", 0) + 1
-    st.session_state["v11_autocalc"] = True   # пример сразу считается
+    # только подставить данные; результат — по кнопке РАССЧИТАТЬ
+    st.session_state.pop("v11_res", None)
 
 
 def render(cfg: dict):
@@ -328,7 +329,7 @@ def render(cfg: dict):
     st.markdown('<div style="height:6px"></div>', unsafe_allow_html=True)
     do_calc = st.button("РАССЧИТАТЬ", key="v11_calc_btn", type="primary",
                         use_container_width=True)
-    if do_calc or st.session_state.pop("v11_autocalc", False):
+    if do_calc:
         st.session_state["v11_res"] = solve(scalars, layers, T)
 
     res = st.session_state.get("v11_res")
