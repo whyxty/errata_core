@@ -226,6 +226,8 @@ def _load_example(ex: dict):
     for k in _DEF_SCALARS:
         st.session_state[f"v11_{k}"] = ex[k]
     st.session_state["v11_layers"] = [dict(r) for r in ex["layers"]]
+    # сменить ключ редактора → форсировать пере-инициализацию данными примера
+    st.session_state["v11_editor_ver"] = st.session_state.get("v11_editor_ver", 0) + 1
     st.session_state["v11_autocalc"] = True   # пример сразу считается
 
 
@@ -264,6 +266,7 @@ def render(cfg: dict):
     for k, v in _DEF_SCALARS.items():
         st.session_state.setdefault(f"v11_{k}", v)
     st.session_state.setdefault("v11_layers", [dict(r) for r in _DEF_LAYERS])
+    st.session_state.setdefault("v11_editor_ver", 0)
 
     # ── таблица пластов ──
     st.markdown("##### Разрез скважины (пласты)")
@@ -273,7 +276,8 @@ def render(cfg: dict):
             df[c] = False if c == "Обрабатываемый" else 0.0
     df = df[_COLS]
     edited = st.data_editor(
-        df, num_rows="dynamic", use_container_width=True, key="v11_editor",
+        df, num_rows="dynamic", use_container_width=True,
+        key=f"v11_editor_{st.session_state['v11_editor_ver']}",
         column_config={
             "Кровля, м":     st.column_config.NumberColumn("Кровля, м", help="Глубина кровли (верх) пласта", format="%.1f"),
             "Подошва, м":    st.column_config.NumberColumn("Подошва, м", help="Глубина подошвы (низ) пласта", format="%.1f"),
