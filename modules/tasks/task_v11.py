@@ -226,6 +226,7 @@ def _load_example(ex: dict):
     for k in _DEF_SCALARS:
         st.session_state[f"v11_{k}"] = ex[k]
     st.session_state["v11_layers"] = [dict(r) for r in ex["layers"]]
+    st.session_state["v11_autocalc"] = True   # пример сразу считается
 
 
 def render(cfg: dict):
@@ -318,7 +319,18 @@ def render(cfg: dict):
             value=float(st.session_state["v11_kmg"]), step=0.01, min_value=1.0)
 
     scalars = {k: st.session_state[f"v11_{k}"] for k in _DEF_SCALARS}
-    res = solve(scalars, layers, T)
+
+    # ── кнопка расчёта ──
+    st.markdown('<div style="height:6px"></div>', unsafe_allow_html=True)
+    do_calc = st.button("РАССЧИТАТЬ", key="v11_calc_btn", type="primary",
+                        use_container_width=True)
+    if do_calc or st.session_state.pop("v11_autocalc", False):
+        st.session_state["v11_res"] = solve(scalars, layers, T)
+
+    res = st.session_state.get("v11_res")
+    if res is None:
+        st.info("Заполните разрез и параметры скважины, затем нажмите «РАССЧИТАТЬ».")
+        return
 
     # ── метрики ──
     c1, c2, c3, c4 = st.columns(4)
