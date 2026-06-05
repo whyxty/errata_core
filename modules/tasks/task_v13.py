@@ -9,6 +9,7 @@ import pandas as pd
 import streamlit as st
 
 from modules.input_data import get_inputs
+from modules.ui import calc_gate, clear_result
 
 
 # Пример В.10.1 (из методички)
@@ -53,6 +54,7 @@ def solve(p: dict) -> dict:
 def _load_example():
     for k, v in EXAMPLE_V10.items():
         st.session_state[f"v13_{k}"] = v
+    clear_result("v13")
 
 
 def render(cfg: dict):
@@ -109,7 +111,12 @@ def render(cfg: dict):
 
     p = {k: st.session_state[f"v13_{k}"] for k in
          ("V_ks", "V_zrs", "H_no", "H_vo", "D_k", "d_vn", "d_v")}
-    res = solve(p)
+
+    # ── кнопка расчёта: результат показывается только после нажатия ──
+    res = calc_gate("v13", lambda: solve(p),
+                    prompt="Заполните исходные данные, затем нажмите «РАССЧИТАТЬ».")
+    if res is None:
+        return
 
     # ── метрики ──
     c1, c2, c3 = st.columns(3)

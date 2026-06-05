@@ -13,6 +13,7 @@ import streamlit as st
 import plotly.graph_objects as go
 
 from modules.input_data import get_inputs
+from modules.ui import calc_gate, clear_result
 
 
 # Пример В.15.1 (из методички)
@@ -39,6 +40,7 @@ def solve(p: dict) -> dict:
 def _load_example():
     for k, v in EXAMPLE_V15.items():
         st.session_state[f"v14_{k}"] = v
+    clear_result("v14")
 
 
 def render(cfg: dict):
@@ -87,7 +89,12 @@ def render(cfg: dict):
             "m₀, % — начальная пористость (справ.)", value=float(st.session_state["v14_m_0"]), step=0.1, min_value=0.0)
 
     p = {k: st.session_state[f"v14_{k}"] for k in ("DG_g", "rho_sk", "rho_p", "m_s", "k_ms", "m_0")}
-    res = solve(p)
+
+    # ── кнопка расчёта: результат показывается только после нажатия ──
+    res = calc_gate("v14", lambda: solve(p),
+                    prompt="Заполните исходные данные, затем нажмите «РАССЧИТАТЬ».")
+    if res is None:
+        return
 
     # ── метрики ──
     c1, c2, c3, c4 = st.columns(4)

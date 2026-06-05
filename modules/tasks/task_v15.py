@@ -16,6 +16,7 @@ import pandas as pd
 import streamlit as st
 
 from modules.input_data import get_inputs
+from modules.ui import calc_gate, clear_result
 
 
 _V_COLS = ["Vскр, м³", "Vгкр, м³", "rз.рs, м", "rз.рg, м", "ks, мкм²", "kg, мкм²", "Zко, руб"]
@@ -72,6 +73,7 @@ def _load_example():
             st.session_state["v15_variants"] = [dict(r) for r in v]
         else:
             st.session_state[f"v15_{k}"] = v
+    clear_result("v15")
 
 
 def render(cfg: dict):
@@ -162,13 +164,19 @@ def render(cfg: dict):
     st.session_state["v15_variants"] = edited.to_dict("records")
     variants = st.session_state["v15_variants"]
 
-    # ── расчёт по строкам ──
-    results = []
-    for row in variants:
-        r = solve_variant(base, row)
-        if r is not None:
-            results.append((row, r))
+    # ── кнопка расчёта: результат показывается только после нажатия ──
+    def _compute():
+        out = []
+        for row in variants:
+            r = solve_variant(base, row)
+            if r is not None:
+                out.append((row, r))
+        return out
 
+    results = calc_gate("v15", _compute,
+                        prompt="Заполните параметры и варианты, затем нажмите «РАССЧИТАТЬ».")
+    if results is None:
+        return
     if not results:
         st.info("Заполните корректные варианты (r_c < rз.рg < rз.рs < r_k; ks, kg > 0) "
                 "или нажмите «Пример».")

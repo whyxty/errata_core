@@ -19,6 +19,7 @@ import streamlit as st
 import plotly.graph_objects as go
 
 from modules.input_data import get_inputs
+from modules.ui import calc_gate, clear_result
 
 
 _PT_COLS = ["t, мин", "pу, МПа", "V, м³"]
@@ -130,6 +131,7 @@ def _load_example():
     st.session_state["v12_points"] = [dict(r) for r in EXAMPLE_POINTS]
     for k, v in EXAMPLE_SCALARS.items():
         st.session_state[f"v12_{k}"] = v
+    clear_result("v12")   # пример только подставляет; расчёт — по кнопке
 
 
 def render(cfg: dict):
@@ -231,7 +233,13 @@ def render(cfg: dict):
         "grad_grp_mode": st.session_state["v12_grad_grp_mode"],
         "grad_grp_meas": st.session_state["v12_grad_grp_meas"],
     }
-    res = solve(params, T)
+    # ── кнопка расчёта: результат показывается только после нажатия ──
+    snap = calc_gate("v12", lambda: {"res": solve(params, T), "pts": pts.to_dict("records")},
+                     prompt="Заполните точки кривой и параметры, затем нажмите «РАССЧИТАТЬ».")
+    if snap is None:
+        return
+    res = snap["res"]
+    pts = pd.DataFrame(snap["pts"])
 
     # ── график ──
     st.markdown("##### Кривая приёмистости")
