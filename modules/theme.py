@@ -104,10 +104,9 @@ html, body, .stApp {{
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }}
-/* шрифт/цвет для элементов Streamlit, но БЕЗ принудительного фона
-   (иначе внутренняя обёртка кнопки красится белым поверх градиента) */
+/* только шрифт для элементов Streamlit — БЕЗ принудительного фона и цвета,
+   иначе обёртка кнопки красится белым/тёмным поверх градиента и текста */
 [class*="st-"] {{
-    color: var(--text);
     font-family: var(--sans);
 }}
 .stApp {{ background: var(--bg) !important; }}
@@ -354,12 +353,13 @@ code {{
 /* ─── buttons (премиальный дизайн: градиент + блик + мягкая тень) ─── */
 .stButton button, .stDownloadButton button, .stFormSubmitButton button {{
     position: relative !important;
-    height: 44px !important;
-    padding: 0 28px !important;
-    border-radius: 11px !important;
+    height: 38px !important;
+    padding: 0 22px !important;
+    border-radius: 9px !important;
     font-family: var(--sans) !important;
-    font-size: 13.5px !important;
+    font-size: 13px !important;
     font-weight: 600 !important;
+    color: #fff;
     letter-spacing: 0.01em !important;
     text-transform: none !important;
     border: 1px solid transparent !important;

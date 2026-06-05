@@ -21,8 +21,9 @@ def calc_gate(task_id: str, compute_fn, *, prompt: str | None = None):
     """
     res_key = f"{task_id}_res"
     st.markdown('<div style="height:6px"></div>', unsafe_allow_html=True)
-    if st.button("РАССЧИТАТЬ", key=f"{task_id}_calc_btn", type="primary",
-                 use_container_width=True):
+    _, mid, _ = st.columns([1, 1.2, 1])
+    if mid.button("РАССЧИТАТЬ", key=f"{task_id}_calc_btn", type="primary",
+                  use_container_width=True):
         st.session_state[res_key] = compute_fn()
 
     res = st.session_state.get(res_key)
