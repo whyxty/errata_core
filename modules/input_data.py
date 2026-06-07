@@ -141,8 +141,8 @@ def render_input_form():
             st.session_state.H_vo = st.number_input("H_в.о — верхнее отв. перфорации, м (В.17)", value=float(st.session_state.H_vo))
         with c2:
             st.session_state.D_k = st.number_input("D_к внутр. ЭК, м (В.17)", value=float(st.session_state.D_k), step=0.001, format="%.3f")
-            st.session_state.d_vn = st.number_input("d_вн внутр. НКТ, м (В.17)", value=float(st.session_state.d_vn), step=0.001, format="%.3f")
-            st.session_state.d_v = st.number_input("d_в наруж. НКТ, м (В.17)", value=float(st.session_state.d_v), step=0.001, format="%.3f")
+            st.session_state.d_vn = st.number_input("d_вн наруж. НКТ, м (В.17)", value=float(st.session_state.d_vn), step=0.001, format="%.3f")
+            st.session_state.d_v = st.number_input("d_в внутр. НКТ, м (В.17)", value=float(st.session_state.d_v), step=0.001, format="%.3f")
         with c3:
             st.session_state.rho_fluid = st.number_input("ρ продавочной жидкости, кг/м³ (В.17)", value=float(st.session_state.rho_fluid))
 
