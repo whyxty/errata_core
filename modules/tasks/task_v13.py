@@ -8,7 +8,6 @@
 import pandas as pd
 import streamlit as st
 
-from modules.input_data import get_inputs
 from modules.ui import calc_gate, clear_result
 
 
@@ -58,7 +57,6 @@ def _load_example():
 
 
 def render(cfg: dict):
-    inp = get_inputs()
 
     title_col, btn_col = st.columns([5, 1.3])
     title_col.subheader("Объёмы продавочной и вытесняющей жидкости")
