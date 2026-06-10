@@ -387,26 +387,31 @@ def render(cfg: dict):
     st.markdown("##### Скин-фактор S (качество призабойной зоны)")
     st.caption("S — скин-фактор. S > 0 — загрязнение/ухудшение ПЗП; S < 0 — улучшение "
                "(эффект кислотной обработки); S = 0 — идеальная (теоретическая) скважина. "
-               "Qф берётся из параметров скважины выше.")
-    st.latex(r"Q_т = \frac{2\pi k h\,\Delta P}{\mu\left(\ln\frac{R_к}{r_c}+S\right)}"
+               "Qф берётся из параметров скважины выше. Поскольку поглощение происходит "
+               "только в обрабатываемых пластах (по расходометрии/термометрии), Qт "
+               "рассчитывается по их параметрам: h = Σhэф и k̄ = εобр/h — из таблицы разреза.")
+    st.latex(r"Q_т = \frac{2\pi \cdot k \cdot h \cdot \Delta P}{\mu \cdot \ln\dfrac{R_к}{r_c}}"
              r"\qquad S = \ln\frac{R_к}{r_c}\left(\frac{Q_ф}{Q_т}-1\right)")
+    st.caption("Расчёт ведётся строго по формуле в СИ: k [м²], ΔP [Па], μ [Па·с] → Qт [м³/с], "
+               "затем перевод в м³/сут (×86 400).")
 
     st.session_state.setdefault("v11s_Rk", 200.0)
     st.session_state.setdefault("v11s_rc", 0.1)
-    st.session_state.setdefault("v11s_k", 0.05)
     st.session_state.setdefault("v11s_dP", 5.0)
     st.session_state.setdefault("v11s_mu", 1.0)
 
     Qf_skin = float(st.session_state["v11_Qf"])  # фактический дебит из параметров задачи
-    h_sum = res["h_ef_sum"]                       # эфф. толщина — из таблицы разреза (выше)
 
-    c1, c2, c3 = st.columns(3)
+    # обрабатываемые (поглощающие) пласты — из таблицы разреза:
+    #   h_obr = Σhэф; k̄ = εобр / h_obr (тогда k̄·h_obr = εобр — согласовано с В.13)
+    h_obr = sum(float(r.get("hэф, м") or 0) for r in res["rows"] if r.get("Обрабатываемый"))
+    k_obr = (res["eps_obr"] / h_obr) if h_obr > 0 else 0.0
+
+    c1, c2 = st.columns(2)
     st.session_state["v11s_Rk"] = c1.number_input("Rк, м — радиус контура питания",
         value=float(st.session_state["v11s_Rk"]), step=10.0)
     st.session_state["v11s_rc"] = c2.number_input("r_c, м — радиус скважины",
         value=float(st.session_state["v11s_rc"]), step=0.01, format="%.3f")
-    st.session_state["v11s_k"] = c3.number_input("k, мкм² — проницаемость",
-        value=float(st.session_state["v11s_k"]), step=0.001, format="%.3f")
 
     d1, d2 = st.columns(2)
     st.session_state["v11s_dP"] = d1.number_input("ΔP, МПа — депрессия",
@@ -414,21 +419,32 @@ def render(cfg: dict):
     st.session_state["v11s_mu"] = d2.number_input("μ, мПа·с — вязкость",
         value=float(st.session_state["v11s_mu"]), step=0.1)
 
-    st.caption(f"h = {h_sum:.1f} м — суммарная эфф. толщина из таблицы разреза (hэф_сум).")
+    st.caption(f"По обрабатываемым пластам: h = {h_obr:.1f} м; "
+               f"k̄ = εобр/h = {res['eps_obr']:.4f}/{h_obr:.1f} = {k_obr:.4f} мкм²."
+               if h_obr > 0 else
+               "В таблице разреза не отмечены обрабатываемые пласты (или у них не задано k₀).")
 
     Rk, rc = st.session_state["v11s_Rk"], st.session_state["v11s_rc"]
     ln_ratio = math.log(Rk / rc) if (Rk > 0 and rc > 0 and Rk > rc) else None
 
-    # Qт по Дюпюи (S=0): Q[м³/сут] = 2π·86.4·k·h·ΔP/(μ·ln(Rк/rc)); k[мкм²], ΔP[МПа], μ[мПа·с]
-    if ln_ratio and st.session_state["v11s_mu"] > 0 and h_sum > 0:
-        Qt = (542.867 * st.session_state["v11s_k"] * h_sum
-              * st.session_state["v11s_dP"]) / (st.session_state["v11s_mu"] * ln_ratio)
+    # Qт по Дюпюи (S=0) строго по формуле в СИ:
+    #   k: мкм² → м² (×1e-12); ΔP: МПа → Па (×1e6); μ: мПа·с → Па·с (×1e-3)
+    #   Qт = 2π·k·h·ΔP / (μ·ln(Rк/rc)) [м³/с] → ×86400 [м³/сут]
+    k_si = k_obr * 1e-12                          # м²
+    dP_si = st.session_state["v11s_dP"] * 1e6     # Па
+    mu_si = st.session_state["v11s_mu"] * 1e-3    # Па·с
+    if ln_ratio and mu_si > 0 and h_obr > 0 and k_obr > 0:
+        Qt_si = (2 * math.pi * k_si * h_obr * dP_si) / (mu_si * ln_ratio)  # м³/с
+        Qt = Qt_si * 86400.0                                               # м³/сут
     else:
-        Qt = 0.0
+        Qt_si, Qt = 0.0, 0.0
 
     # ── результат ──
     if ln_ratio is None:
         st.warning("Проверьте радиусы: нужно r_c < Rк, оба > 0.")
+    elif h_obr <= 0 or k_obr <= 0:
+        st.warning("Отметьте обрабатываемые пласты в таблице разреза и задайте им hэф и k₀ — "
+                   "по ним считаются h и k̄ для Qт.")
     elif Qt <= 0:
         st.warning("Qт должен быть больше 0.")
     else:
@@ -438,8 +454,41 @@ def render(cfg: dict):
         cc2.metric("ln(Rк/r_c)", f"{ln_ratio:.3f}")
         cc3.metric("Qф/Qт", f"{Qf_skin / Qt:.3f}")
         cc4.metric("S — скин-фактор", f"{S:+.2f}")
-        st.latex(r"S = \ln\frac{%.0f}{%.2f}\left(\frac{%.1f}{%.1f}-1\right) = %.2f"
-                 % (Rk, rc, Qf_skin, Qt, S))
+
+        def _sci(x: float) -> str:
+            """Число в LaTeX-научной записи: 5e-14 → 5{,}0\\cdot10^{-14}."""
+            mant, exp = f"{x:.4e}".split("e")
+            mant = f"{float(mant):g}"
+            e = int(exp)
+            return mant if e == 0 else r"%s \cdot 10^{%d}" % (mant, e)
+
+        with st.expander("Подстановка по шагам (СИ)", expanded=True):
+            st.markdown("**Шаг 1. Параметры обрабатываемых пластов и перевод в СИ:**")
+            st.latex(r"h = \sum h_{эф} = %.1f\ \text{м} \qquad "
+                     r"\bar{k} = \frac{\varepsilon_{обр}}{h} = \frac{%.4f}{%.1f} = %.4f\ \text{мкм}^2"
+                     % (h_obr, res["eps_obr"], h_obr, k_obr))
+            st.latex(r"\bar{k} = %.4f\ \text{мкм}^2 = %s\ \text{м}^2 \qquad "
+                     r"\Delta P = %g\ \text{МПа} = %s\ \text{Па} \qquad "
+                     r"\mu = %g\ \text{мПа·с} = %s\ \text{Па·с}"
+                     % (k_obr, _sci(k_si),
+                        st.session_state["v11s_dP"], _sci(dP_si),
+                        st.session_state["v11s_mu"], _sci(mu_si)))
+            st.markdown("**Шаг 2. Логарифм отношения радиусов:**")
+            st.latex(r"\ln\frac{R_к}{r_c} = \ln\frac{%g\ \text{м}}{%g\ \text{м}} = %.3f"
+                     % (Rk, rc, ln_ratio))
+            st.markdown("**Шаг 3. Теоретический дебит по Дюпюи:**")
+            st.latex(
+                r"Q_т = \frac{2\pi \cdot %s\ \text{м}^2 \cdot %.1f\ \text{м} \cdot %s\ \text{Па}}"
+                r"{%s\ \text{Па·с} \cdot %.3f} = %s\ \text{м}^3/\text{с}"
+                % (_sci(k_si), h_obr, _sci(dP_si), _sci(mu_si), ln_ratio, _sci(Qt_si)))
+            st.latex(
+                r"Q_т = %s\ \text{м}^3/\text{с} \cdot 86\,400\ \text{с/сут} = %.1f\ \text{м}^3/\text{сут}"
+                % (_sci(Qt_si), Qt))
+            st.markdown("**Шаг 4. Скин-фактор:**")
+            st.latex(
+                r"S = \ln\frac{%g}{%g}\left(\frac{%.1f\ \text{м}^3/\text{сут}}{%.1f\ \text{м}^3/\text{сут}}-1\right)"
+                r" = %.3f \cdot (%.5f) = %.2f"
+                % (Rk, rc, Qf_skin, Qt, ln_ratio, Qf_skin / Qt - 1.0, S))
         if S > 0.5:
             st.error(f"S = {S:+.2f} > 0 — призабойная зона загрязнена/ухудшена, "
                      "обработка целесообразна.")
